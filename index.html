@@ -205,20 +205,34 @@ body {
 }
 
 .landing-login-btn {
+    height: var(--button-height); /* 56px - Requirement 12.1 */
     background: transparent;
     border: 1px solid var(--landing-border);
     color: var(--landing-text);
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
+    padding: 12px 24px; /* Requirement 12.10 */
+    border-radius: var(--radius-button); /* 10px - Requirement 12.2 */
+    font-size: var(--font-size-base); /* 17px - Requirement 12.3 */
+    font-weight: 600; /* Requirement 12.3 */
+    cursor: pointer; /* Requirement 12.11 */
+    user-select: none; /* Requirement 12.12 */
+    transition: background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                border-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                opacity 0.1s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.1 - 0.3s для цвета */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity; /* Requirement 7.10 - оптимизация анимаций */
 }
 
 .landing-login-btn:hover {
     background: rgba(255, 255, 255, 0.05);
     border-color: var(--landing-accent);
+}
+
+.landing-login-btn:active {
+    transform: scale(0.96); /* Requirement 12.8 */
+    opacity: 0.8; /* Requirement 12.9 */
 }
 
 /* Hero секция */
@@ -250,37 +264,61 @@ body {
     flex-wrap: wrap;
 }
 
+/* ============================================
+   TASK 7: Button Components
+   Requirements: 12.1-12.12, 7.1, 7.5
+   ============================================ */
+
+/* Primary Button (основная кнопка) */
 .btn-primary {
-    background: var(--landing-accent);
-    color: white;
-    padding: 16px 32px;
-    border-radius: 12px;
-    font-size: 16px;
+    height: var(--button-height); /* 56px */
+    background: var(--primary-blue); /* #0D4CD3 */
+    color: #FFFFFF;
+    padding: 12px 24px;
+    border-radius: var(--radius-button); /* 10px */
+    font-size: var(--font-size-base); /* 17px */
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: all 0.2s;
+    user-select: none;
+    transition: background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                opacity 0.1s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.1, 7.5 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity; /* Requirement 7.10 - оптимизация анимаций */
 }
 
-.btn-primary:hover {
-    background: #4A8FE7;
-    transform: translateY(-2px);
+.btn-primary:active {
+    transform: scale(0.96);
+    opacity: 0.8;
 }
 
+/* Secondary Button (вторичная кнопка) */
 .btn-secondary {
-    background: transparent;
-    color: var(--landing-text);
-    padding: 16px 32px;
-    border-radius: 12px;
-    font-size: 16px;
+    height: var(--button-height); /* 56px */
+    background: var(--background); /* #F5F5F7 */
+    color: var(--primary-blue); /* #0D4CD3 */
+    padding: 12px 24px;
+    border-radius: var(--radius-button); /* 10px */
+    font-size: var(--font-size-base); /* 17px */
     font-weight: 600;
-    border: 1px solid var(--landing-border);
+    border: 1px solid var(--border-color);
     cursor: pointer;
-    transition: all 0.2s;
+    user-select: none;
+    transition: background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                opacity 0.1s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.1, 7.5 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity; /* Requirement 7.10 - оптимизация анимаций */
 }
 
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.05);
+.btn-secondary:active {
+    transform: scale(0.96);
+    opacity: 0.8;
 }
 
 /* Секция возможностей */
@@ -451,21 +489,28 @@ body {
     margin-right: 8px;
 }
 
+/* Pricing Button */
 .pricing-btn {
     width: 100%;
-    padding: 14px;
-    background: var(--landing-accent);
-    color: white;
+    height: var(--button-height); /* 56px */
+    padding: 12px 24px;
+    background: var(--primary-blue); /* #0D4CD3 */
+    color: #FFFFFF;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: var(--radius-button); /* 10px */
+    font-size: var(--font-size-base); /* 17px */
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    user-select: none;
+    transition: background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                opacity 0.1s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.1 - 0.3s для цвета */
+    will-change: transform, opacity; /* Requirement 7.10 - оптимизация анимаций */
 }
 
-.pricing-btn:hover {
-    background: #4A8FE7;
+.pricing-btn:active {
+    transform: scale(0.96);
+    opacity: 0.8;
 }
 
 /* Секция FAQ */
@@ -652,12 +697,15 @@ body {
 
 /* Шапка приложения */
 .app-header {
-    background: var(--app-card-bg);
-    padding: 16px;
+    height: 64px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: var(--app-shadow);
+    box-shadow: var(--shadow-header);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -684,7 +732,7 @@ body {
 }
 
 .app-title {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 600;
     color: var(--app-text);
 }
@@ -701,6 +749,14 @@ body {
     color: var(--app-text);
     cursor: pointer;
     padding: 8px;
+    transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.1, 7.4 */
+    will-change: transform, opacity; /* Requirement 7.10 - оптимизация анимаций */
+}
+
+.app-icon-btn:active {
+    transform: scale(0.9);
+    opacity: 0.7;
 }
 
 /* Главный экран */
@@ -713,6 +769,7 @@ body {
     padding: 16px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth; /* Requirement 7.9 - плавная прокрутка */
 }
 
 .pills-section::-webkit-scrollbar {
@@ -724,23 +781,33 @@ body {
     gap: 12px;
 }
 
+/* ============================================
+   TASK 9: Pill компоненты
+   Requirements: 14.1-14.10, 7.9
+   ============================================ */
 .pill {
-    background: var(--app-card-bg);
-    border: 1px solid var(--app-border);
-    border-radius: 20px;
-    padding: 12px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--app-text);
-    white-space: nowrap;
+    background: #FFFFFF; /* Requirement 14.3 */
+    border: 1px solid #E5E5EA; /* Requirement 14.4 */
+    border-radius: 20px; /* Requirement 14.1 */
+    padding: 10px 16px; /* Requirement 14.2 */
+    font-size: 15px; /* Requirement 14.5 */
+    font-weight: 500; /* Requirement 14.5 */
+    color: #000000; /* Requirement 14.6 */
+    white-space: nowrap; /* Requirement 14.9 */
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                border-color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 14.10, 7.9 */
+    user-select: none;
+    will-change: background-color, color; /* Requirement 7.10 - оптимизация анимаций */
 }
 
+/* Активное состояние Pill */
+.pill.active,
 .pill:hover {
-    background: var(--app-primary);
-    color: white;
-    border-color: var(--app-primary);
+    background: var(--primary-blue); /* Requirement 14.7 - #0D4CD3 */
+    color: #FFFFFF; /* Requirement 14.8 */
+    border-color: var(--primary-blue);
 }
 
 /* Блок начислений */
@@ -798,8 +865,9 @@ body {
     justify-content: center;
     font-size: 32px;
     margin-bottom: 8px;
-    transition: transform 0.2s;
+    transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.2 */
     position: relative;
+    will-change: transform; /* Requirement 7.10 - оптимизация анимаций */
 }
 
 .document-icon::before {
@@ -898,7 +966,8 @@ body {
     justify-content: center;
     font-size: 32px;
     margin-bottom: 8px;
-    transition: transform 0.2s;
+    transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.2 */
+    will-change: transform; /* Requirement 7.10 - оптимизация анимаций */
 }
 
 .service-item:active .service-icon {
@@ -912,22 +981,26 @@ body {
     font-weight: 500;
 }
 
-/* Нижняя навигация */
+/* ============================================
+   TASK 5: Нижняя навигация (Navigation Bar)
+   Requirements: 10.1-10.10, 6.1, 6.6, 6.7, 7.10
+   ============================================ */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+    height: var(--nav-height); /* 84px включая safe area */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     display: flex;
     justify-content: space-around;
-    padding-top: var(--spacing-xs);
-    padding-bottom: 20px; /* Safe area для iOS */
+    align-items: flex-start;
+    padding-top: var(--spacing-xs); /* 8px верхний отступ */
+    padding-bottom: 20px; /* 20px safe area для iOS */
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--border-color);
-    box-shadow: var(--shadow-nav);
+    box-shadow: var(--shadow-nav); /* 0 -1px 3px rgba(0, 0, 0, 0.08) */
     z-index: 1000;
 }
 
@@ -935,33 +1008,39 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     text-decoration: none;
-    color: var(--text-secondary);
-    font-size: 10px;
+    color: var(--text-secondary); /* #8E8E93 для неактивного состояния */
+    font-size: 10px; /* Размер подписей иконок */
+    font-weight: 500;
     cursor: pointer;
-    padding: 8px 16px;
-    transition: color 0.2s;
+    padding: 0 16px;
+    transition: color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.10 */
     min-width: 56px;
+    flex: 1;
+    max-width: 100px;
 }
 
 .nav-item.active {
-    color: var(--primary-blue);
+    color: var(--primary-blue); /* #0D4CD3 для активного состояния */
 }
 
 .nav-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--icon-size);
-    height: var(--icon-size);
+    width: var(--icon-size); /* 24px */
+    height: var(--icon-size); /* 24px */
     margin-bottom: 4px;
     position: relative;
 }
 
 .nav-icon svg {
-    width: var(--icon-size);
-    height: var(--icon-size);
+    width: var(--icon-size); /* 24px */
+    height: var(--icon-size); /* 24px */
     display: block;
+    transition: color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.10 - плавное изменение цвета иконок */
+    will-change: color; /* Requirement 7.10 - оптимизация анимаций */
 }
 
 .nav-icon-fallback {
@@ -981,79 +1060,184 @@ body {
 
 /* Fallback для backdrop-filter */
 @supports not (backdrop-filter: blur(20px)) {
+    .app-header {
+        background: rgba(255, 255, 255, 1);
+    }
+    
     .bottom-nav {
         background: rgba(255, 255, 255, 1);
     }
 }
 
-/* Модальные окна */
+/* ============================================
+   TASK 8: Модальные окна (Modal Components)
+   Requirements: 13.1-13.11, 7.3, 7.4, 7.7, 7.8
+   ============================================ */
+
+/* Overlay модального окна */
 .modal {
     display: none;
-    position: fixed;
+    position: fixed; /* Requirement 13.11 */
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
+    background: rgba(0, 0, 0, 0.4); /* Requirement 13.1 - overlay с правильной прозрачностью */
+    z-index: 1000; /* Requirement 13.11 - правильный z-index */
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: var(--spacing-lg); /* 24px */
+    opacity: 0;
+    transition: opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 13.9 - анимация закрытия */
+    pointer-events: none;
 }
 
+/* Активное состояние модального окна */
 .modal.active {
     display: flex;
+    opacity: 1;
+    pointer-events: auto;
+    animation: modalFadeIn 0.25s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 13.8 - анимация открытия */
 }
 
+/* Анимация появления модального окна */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0; /* Requirement 13.8 - opacity от 0 до 1 */
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Анимация исчезновения модального окна */
+@keyframes modalFadeOut {
+    from {
+        opacity: 1; /* Requirement 13.9 - opacity от 1 до 0 */
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Класс для анимации закрытия */
+.modal.closing {
+    animation: modalFadeOut 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 13.9 - duration 0.2s */
+}
+
+/* Содержимое модального окна */
 .modal-content {
-    background: var(--app-card-bg);
-    border-radius: 16px;
-    padding: 24px;
-    max-width: 400px;
+    background: #FFFFFF; /* Requirement 13.2 - белый фон */
+    border-radius: var(--radius-modal); /* Requirement 13.3 - 16px */
+    padding: var(--spacing-lg); /* Requirement 13.4 - 24px */
+    max-width: 90%; /* Requirement 13.6 - 90% для малых экранов */
     width: 100%;
     position: relative;
+    box-shadow: var(--shadow-modal); /* Requirement 13.5 - 0 4px 12px rgba(0, 0, 0, 0.15) */
+    animation: modalContentSlideIn 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
+/* Анимация содержимого модального окна */
+@keyframes modalContentSlideIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Адаптивность: max-width 400px для больших экранов */
+@media (min-width: 480px) {
+    .modal-content {
+        max-width: 400px; /* Requirement 13.7 - 400px для больших экранов */
+    }
+}
+
+/* Кнопка закрытия модального окна */
 .modal-close {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: var(--spacing-md); /* 16px */
+    right: var(--spacing-md); /* 16px */
     background: none;
     border: none;
     font-size: 24px;
-    color: var(--app-text-secondary);
+    color: var(--text-secondary);
     cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.modal-close:active {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Заголовок модального окна */
 .modal-title {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: var(--app-text);
+    font-size: 20px; /* Requirement 13.10 - правильный размер шрифта */
+    font-weight: 600; /* Requirement 13.10 - правильная жирность */
+    margin-bottom: var(--spacing-md); /* 16px */
+    color: var(--text-primary);
+    padding-right: 32px; /* Отступ для кнопки закрытия */
 }
 
+/* Поля ввода в модальном окне */
 .modal-input {
     width: 100%;
-    padding: 12px;
-    border: 1px solid var(--app-border);
-    border-radius: 8px;
-    font-size: 17px;
-    margin-bottom: 16px;
+    padding: var(--spacing-sm); /* 12px */
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-input); /* 8px */
+    font-size: var(--font-size-base); /* 17px */
+    margin-bottom: var(--spacing-md); /* 16px */
+    font-family: inherit;
+    transition: border-color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
+.modal-input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+}
+
+/* Кнопки в модальном окне */
 .modal-btn {
     width: 100%;
-    padding: 14px;
-    background: var(--app-primary);
-    color: white;
+    height: var(--button-height); /* 56px - Requirement 12.1 */
+    padding: 12px 24px; /* Requirement 12.10 */
+    background: var(--primary-blue); /* #0D4CD3 - Requirement 12.4 */
+    color: #FFFFFF; /* Requirement 12.5 */
     border: none;
-    border-radius: 8px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
+    border-radius: var(--radius-button); /* 10px - Requirement 12.2 */
+    font-size: var(--font-size-base); /* 17px - Requirement 12.3 */
+    font-weight: 600; /* Requirement 12.3 */
+    cursor: pointer; /* Requirement 12.11 */
+    user-select: none; /* Requirement 12.12 */
+    transition: background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                opacity 0.1s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.1 - 0.3s для цвета */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity; /* Requirement 7.10 - оптимизация анимаций */
 }
 
+.modal-btn:active {
+    transform: scale(0.96); /* Requirement 12.8 */
+    opacity: 0.8; /* Requirement 12.9 */
+}
+
+/* Сообщения об ошибках в модальном окне */
 .modal-error {
-    color: #ff3b30;
-    font-size: 13px;
-    margin-top: 8px;
+    color: var(--error); /* #FF3B30 */
+    font-size: var(--font-size-small); /* 13px */
+    margin-top: var(--spacing-xs); /* 8px */
 }
 
 /* QR-код модальное окно */
@@ -1138,24 +1322,75 @@ body {
     padding: 16px;
 }
 
-/* Карточка документа */
+/* ============================================
+   TASK 6: Карточка документа (Card Component)
+   Requirements: 11.1-11.10, 1.10-1.14, 4.1, 4.6, 7.2
+   ============================================ */
 .doc-card-view {
-    background: var(--app-card-bg);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 16px;
-    box-shadow: var(--app-shadow);
+    background: #FFFFFF; /* Requirement 11.1 */
+    border-radius: 12px; /* Requirement 11.2 - var(--radius-card) */
+    padding: 16px; /* Requirement 11.3 */
+    margin-bottom: 16px; /* Requirement 11.5 - margin между карточками */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Requirement 11.4 - var(--shadow-card) */
+    position: relative;
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.2 - 0.2s для масштаба */
+    cursor: pointer;
+    will-change: transform; /* Requirement 7.10 - оптимизация анимаций */
+}
+
+/* Цветная полоса слева - Requirements 11.6, 11.7, 1.10-1.14 */
+.doc-card-view::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px; /* Requirement 11.6 - ширина полосы */
+    border-radius: 12px 0 0 12px; /* Requirement 11.7 */
+    background: var(--doc-passport); /* По умолчанию цвет паспорта */
+}
+
+/* Цвета полос для разных документов - Requirements 1.10-1.14 */
+#passport-page .doc-card-view::before {
+    background: var(--doc-passport); /* #0D4CD3 - Requirement 1.10 */
+}
+
+#snils-page .doc-card-view::before {
+    background: var(--doc-snils); /* #34C759 - Requirement 1.11 */
+}
+
+#oms-page .doc-card-view::before {
+    background: var(--doc-oms); /* #5AC8FA - Requirement 1.12 */
+}
+
+#inn-page .doc-card-view::before {
+    background: var(--doc-inn); /* #FF9500 - Requirement 1.13 */
+}
+
+#driver-page .doc-card-view::before {
+    background: var(--doc-driver); /* #AF52DE - Requirement 1.14 */
+}
+
+/* Hover эффект - Requirement 11.8, 4.6 */
+.doc-card-view:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* Увеличение shadow */
+}
+
+/* Active эффект - Requirement 11.10 */
+.doc-card-view:active {
+    transform: scale(0.98);
 }
 
 .doc-card-title {
-    font-size: 13px;
-    color: var(--app-text-secondary);
+    font-size: 13px; /* Requirement 11.9 - вторичный текст */
+    color: #8E8E93; /* Requirement 11.9 - var(--text-secondary) */
     margin-bottom: 8px;
 }
 
 .doc-card-value {
-    font-size: 17px;
-    font-weight: 600;
+    font-size: 17px; /* Requirement 11.8 - заголовок */
+    font-weight: 600; /* Requirement 11.8 */
     color: var(--app-text);
     margin-bottom: 16px;
 }
@@ -1179,13 +1414,13 @@ body {
 }
 
 .doc-info-label {
-    font-size: 13px;
-    color: var(--app-text-secondary);
+    font-size: 13px; /* Requirement 11.9 - вторичный текст */
+    color: #8E8E93; /* Requirement 11.9 - var(--text-secondary) */
     margin-bottom: 4px;
 }
 
 .doc-info-value {
-    font-size: 17px;
+    font-size: 17px; /* Requirement 11.8 - основной текст */
     color: var(--app-text);
     font-weight: 500;
 }
@@ -1199,32 +1434,42 @@ body {
 
 .doc-action-btn {
     flex: 1;
-    padding: 14px;
-    border-radius: 12px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+    height: var(--button-height); /* 56px - Requirement 12.1 */
+    padding: 12px 24px; /* Requirement 12.10 */
+    border-radius: var(--radius-button); /* 10px - Requirement 12.2 */
+    font-size: var(--font-size-base); /* 17px - Requirement 12.3 */
+    font-weight: 600; /* Requirement 12.3 */
+    cursor: pointer; /* Requirement 12.11 */
+    user-select: none; /* Requirement 12.12 */
+    transition: background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                opacity 0.1s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.1 - 0.3s для цвета */
     border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity; /* Requirement 7.10 - оптимизация анимаций */
 }
 
 .doc-action-btn-primary {
-    background: var(--app-primary);
-    color: white;
+    background: var(--primary-blue); /* #0D4CD3 - Requirement 12.4 */
+    color: #FFFFFF; /* Requirement 12.5 */
 }
 
 .doc-action-btn-primary:active {
-    background: #1440C0;
+    transform: scale(0.96); /* Requirement 12.8 */
+    opacity: 0.8; /* Requirement 12.9 */
 }
 
 .doc-action-btn-secondary {
-    background: var(--app-bg);
-    color: var(--app-text);
-    border: 1px solid var(--app-border);
+    background: var(--background); /* #F5F5F7 - Requirement 12.6 */
+    color: var(--primary-blue); /* #0D4CD3 - Requirement 12.7 */
+    border: 1px solid var(--border-color);
 }
 
 .doc-action-btn-secondary:active {
-    background: #e0e0e0;
+    transform: scale(0.96); /* Requirement 12.8 */
+    opacity: 0.8; /* Requirement 12.9 */
 }
 
 /* Скрытые данные */
@@ -1388,19 +1633,29 @@ body {
 /* Кнопка выхода */
 .logout-btn {
     width: 100%;
-    padding: 14px;
-    background: #ff3b30;
-    color: white;
+    height: var(--button-height); /* 56px - Requirement 12.1 */
+    padding: 12px 24px; /* Requirement 12.10 */
+    background: var(--error); /* #FF3B30 */
+    color: #FFFFFF;
     border: none;
-    border-radius: 12px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
+    border-radius: var(--radius-button); /* 10px - Requirement 12.2 */
+    font-size: var(--font-size-base); /* 17px - Requirement 12.3 */
+    font-weight: 600; /* Requirement 12.3 */
+    cursor: pointer; /* Requirement 12.11 */
+    user-select: none; /* Requirement 12.12 */
     margin-top: 16px;
+    transition: background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                opacity 0.1s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 7.1 - 0.3s для цвета */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity; /* Requirement 7.10 - оптимизация анимаций */
 }
 
 .logout-btn:active {
-    background: #cc2f26;
+    transform: scale(0.96); /* Requirement 12.8 */
+    opacity: 0.8; /* Requirement 12.9 */
 }
 
 /* ============================================
@@ -1669,19 +1924,25 @@ body {
 
 .admin-save-btn {
     width: 100%;
-    padding: 14px;
-    background: var(--app-primary);
-    color: white;
+    height: var(--button-height); /* 56px - Requirement 12.1 */
+    padding: 12px 24px; /* Requirement 12.10 */
+    background: var(--primary-blue); /* #0D4CD3 - Requirement 12.4 */
+    color: #FFFFFF; /* Requirement 12.5 */
     border: none;
-    border-radius: 8px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
+    border-radius: var(--radius-button); /* 10px - Requirement 12.2 */
+    font-size: var(--font-size-base); /* 17px - Requirement 12.3 */
+    font-weight: 600; /* Requirement 12.3 */
+    cursor: pointer; /* Requirement 12.11 */
+    user-select: none; /* Requirement 12.12 */
+    transition: all 0.1s cubic-bezier(0.4, 0.0, 0.2, 1); /* Requirement 12.8, 7.1 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .admin-save-btn:active {
-    background: #1440C0;
+    transform: scale(0.96); /* Requirement 12.8 */
+    opacity: 0.8; /* Requirement 12.9 */
 }
 
 .admin-logs-list {
@@ -1731,6 +1992,402 @@ body {
 .admin-log-action.login {
     background: var(--app-primary);
     color: white;
+}
+
+/* ============================================
+   TASK 11: Responsive Breakpoints
+   Requirements: 8.1-8.12, 10.2
+   ============================================ */
+
+/* ============================================
+   Breakpoint: Экраны < 375px (очень малые устройства)
+   Requirements: 8.6, 8.7
+   ============================================ */
+@media (max-width: 374px) {
+    /* Уменьшение font-size на 10% - Requirement 8.6 */
+    body {
+        font-size: 90%;
+    }
+    
+    /* Уменьшение padding до 12px - Requirement 8.7 */
+    .app-header {
+        padding: 12px;
+    }
+    
+    .app-main,
+    .pills-section,
+    .documents-section,
+    .services-section,
+    .profile-content {
+        padding: 12px;
+    }
+    
+    .doc-card-view {
+        padding: 12px;
+    }
+    
+    .modal-content {
+        padding: 12px;
+    }
+    
+    /* Уменьшение размеров иконок */
+    .document-icon,
+    .service-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 28px;
+    }
+    
+    /* Уменьшение сетки документов */
+    .documents-grid-app,
+    .services-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+}
+
+/* ============================================
+   Breakpoint: 375px (iPhone SE и малые устройства)
+   Requirement: 8.1
+   ============================================ */
+@media (min-width: 375px) {
+    /* Базовые стили для iPhone SE */
+    .app-container {
+        max-width: 375px;
+        margin: 0 auto;
+    }
+}
+
+/* ============================================
+   Breakpoint: 390px (iPhone 12/13/14)
+   Requirement: 8.2
+   ============================================ */
+@media (min-width: 390px) {
+    /* Оптимизация для iPhone 12/13/14 */
+    .documents-grid-app,
+    .services-grid {
+        gap: 14px;
+    }
+    
+    .document-icon,
+    .service-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* ============================================
+   Breakpoint: 428px (iPhone 12/13/14 Pro Max)
+   Requirement: 8.3
+   ============================================ */
+@media (min-width: 428px) {
+    /* Оптимизация для iPhone Pro Max */
+    .documents-grid-app,
+    .services-grid {
+        gap: 16px;
+    }
+    
+    .document-icon,
+    .service-icon {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+    }
+}
+
+/* ============================================
+   Breakpoint: 768px+ (планшеты)
+   Requirements: 8.4, 8.8, 8.11
+   ============================================ */
+@media (min-width: 768px) {
+    /* Ограничение max-width контента до 600px - Requirement 8.8 */
+    .app-main,
+    .document-page,
+    .profile-page {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    /* CSS Grid с auto-fit для адаптивной сетки - Requirement 8.11 */
+    .documents-grid-app {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 20px;
+    }
+    
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 20px;
+    }
+    
+    /* Увеличение размеров для планшетов */
+    .document-icon,
+    .service-icon {
+        width: 72px;
+        height: 72px;
+        font-size: 36px;
+    }
+    
+    .section-title {
+        font-size: 26px;
+    }
+    
+    /* Центрирование навигации */
+    .bottom-nav {
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+    }
+    
+    .app-header {
+        max-width: 600px;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+    }
+}
+
+/* ============================================
+   Breakpoint: 1024px+ (большие планшеты и десктопы)
+   Requirements: 8.5, 8.9
+   ============================================ */
+@media (min-width: 1024px) {
+    /* Предупреждение о мобильной версии - Requirement 8.9 */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    body::after {
+        content: '📱 Это мобильное приложение\AДля лучшего опыта откройте на мобильном устройстве\Aили уменьшите окно браузера';
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10001;
+        color: white;
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        white-space: pre-line;
+        padding: 40px;
+        background: rgba(13, 76, 211, 0.1);
+        border-radius: 20px;
+        border: 2px solid var(--primary-blue);
+        max-width: 500px;
+        line-height: 1.6;
+    }
+}
+
+/* ============================================
+   iOS Safe Area Support
+   Requirement: 8.10 (10.2)
+   ============================================ */
+
+/* Поддержка iOS safe area для нижней навигации */
+.bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* Поддержка safe area для всех страниц */
+.app-main,
+.document-page,
+.profile-page {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Поддержка safe area для модальных окон */
+.modal-content {
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ============================================
+   Landscape Orientation Lock для устройств < 1024px
+   Requirement: 8.10
+   ============================================ */
+
+/* Блокировка ландшафтной ориентации уже реализована выше в строках 635-645 */
+/* Дополнительная оптимизация для landscape на малых устройствах */
+@media screen and (orientation: landscape) and (max-height: 500px) and (max-width: 1024px) {
+    /* Уменьшение высоты элементов в landscape */
+    .app-header {
+        height: 48px;
+        padding: 8px 16px;
+    }
+    
+    .bottom-nav {
+        height: 60px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+    
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .nav-item {
+        font-size: 9px;
+    }
+}
+
+/* ============================================
+   Адаптивность для CSS Grid с auto-fit
+   Requirement: 8.11
+   ============================================ */
+
+/* Адаптивная сетка документов с auto-fit */
+@media (min-width: 375px) {
+    .documents-grid-app {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+        gap: var(--spacing-sm);
+    }
+}
+
+/* Оптимизация сетки для средних экранов */
+@media (min-width: 480px) and (max-width: 767px) {
+    .documents-grid-app,
+    .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+        gap: var(--spacing-md);
+    }
+}
+
+/* ============================================
+   Flexbox для адаптивного расположения Navigation_Bar
+   Requirement: 8.12
+   ============================================ */
+
+/* Flexbox уже используется в .bottom-nav (строка 883) */
+/* Дополнительная оптимизация для разных размеров */
+@media (max-width: 374px) {
+    .nav-item {
+        padding: 0 8px;
+        min-width: 48px;
+    }
+    
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .nav-item {
+        font-size: 9px;
+    }
+}
+
+@media (min-width: 375px) and (max-width: 428px) {
+    .nav-item {
+        padding: 0 12px;
+        min-width: 52px;
+    }
+}
+
+@media (min-width: 428px) {
+    .nav-item {
+        padding: 0 16px;
+        min-width: 60px;
+    }
+}
+
+/* ============================================
+   Дополнительные адаптивные улучшения
+   ============================================ */
+
+/* Адаптивность модальных окон */
+@media (max-width: 374px) {
+    .modal-content {
+        max-width: 95%;
+        padding: 16px;
+    }
+    
+    .modal-title {
+        font-size: 18px;
+    }
+    
+    .modal-btn {
+        height: 48px;
+        font-size: 15px;
+    }
+}
+
+/* Адаптивность карточек документов */
+@media (max-width: 374px) {
+    .doc-card-view {
+        padding: 12px;
+    }
+    
+    .doc-card-title {
+        font-size: 12px;
+    }
+    
+    .doc-card-value {
+        font-size: 15px;
+    }
+    
+    .doc-info-label {
+        font-size: 12px;
+    }
+    
+    .doc-info-value {
+        font-size: 15px;
+    }
+}
+
+/* Адаптивность кнопок */
+@media (max-width: 374px) {
+    .btn-primary,
+    .btn-secondary,
+    .doc-action-btn {
+        height: 48px;
+        font-size: 15px;
+        padding: 10px 20px;
+    }
+}
+
+/* Адаптивность Pills */
+@media (max-width: 374px) {
+    .pill {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* Адаптивность профиля */
+@media (max-width: 374px) {
+    .profile-avatar-large {
+        width: 64px;
+        height: 64px;
+        font-size: 28px;
+    }
+    
+    .profile-name {
+        font-size: 20px;
+    }
+}
+
+/* Оптимизация для очень широких экранов (предотвращение растягивания) */
+@media (min-width: 1200px) {
+    .app-main,
+    .document-page,
+    .profile-page {
+        max-width: 600px;
+    }
 }
 </style>
 
