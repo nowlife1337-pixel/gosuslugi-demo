@@ -1,0 +1,3609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="ГосFake - Развлекательный сервис для создания реалистичных цифровых документов">
+    <meta name="theme-color" content="#0d0d1a">
+    <title>ГосFake - Фейк Госуслуги</title>
+    
+    <!-- Favicon as data URI -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+    
+    <!-- QRCode.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+/* ============================================
+   TASK 1: Базовые стили и сброс
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* ============================================
+       Основные цвета (Primary Colors)
+       ============================================ */
+    --primary-blue: #0D4CD3;
+    --background: #F5F5F7;
+    --card-background: #FFFFFF;
+    
+    /* ============================================
+       Цвета текста (Text Colors)
+       ============================================ */
+    --text-primary: #000000;
+    --text-secondary: #8E8E93;
+    
+    /* ============================================
+       Цвета документов (Document Colors)
+       ============================================ */
+    --doc-passport: #0D4CD3;
+    --doc-snils: #34C759;
+    --doc-oms: #5AC8FA;
+    --doc-inn: #FF9500;
+    --doc-driver: #AF52DE;
+    
+    /* ============================================
+       Цвета статусов (Status Colors)
+       ============================================ */
+    --success: #34C759;
+    --error: #FF3B30;
+    --warning: #FF9500;
+    
+    /* ============================================
+       Границы (Borders)
+       ============================================ */
+    --border-color: #E5E5EA;
+    
+    /* ============================================
+       Тени (Shadows)
+       ============================================ */
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-header: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --shadow-nav: 0 -1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-modal: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+    
+    /* ============================================
+       Скругления углов (Border Radius)
+       ============================================ */
+    --radius-card: 12px;
+    --radius-button: 10px;
+    --radius-pill: 20px;
+    --radius-input: 8px;
+    --radius-modal: 16px;
+    --radius-icon: 14px;
+    
+    /* ============================================
+       Отступы (Spacing)
+       ============================================ */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    
+    /* ============================================
+       Типографика (Typography)
+       ============================================ */
+    --font-size-small: 13px;
+    --font-size-base: 17px;
+    --font-size-large: 22px;
+    
+    /* ============================================
+       Размеры компонентов (Component Sizes)
+       ============================================ */
+    --button-height: 56px;
+    --nav-height: 84px;
+    --header-height: 64px;
+    --icon-size: 24px;
+    --avatar-size: 40px;
+    --doc-icon-size: 64px;
+    
+    /* ============================================
+       Цвета лендинга (Landing Colors - для совместимости)
+       ============================================ */
+    --landing-bg: #0d0d1a;
+    --landing-text: #ffffff;
+    --landing-text-secondary: #9ca3af;
+    --landing-accent: #5B9EFF;
+    --landing-card-bg: #1a1a2e;
+    --landing-border: rgba(255, 255, 255, 0.1);
+    
+    /* ============================================
+       Цвета приложения (App Colors - для совместимости)
+       ============================================ */
+    --app-primary: #0D4CD3;
+    --app-bg: #F5F5F7;
+    --app-card-bg: #FFFFFF;
+    --app-text: #000000;
+    --app-text-secondary: #8E8E93;
+    --app-border: #E5E5EA;
+    --app-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+/* ============================================
+   TASK 2: Utility классы для типографики
+   ============================================ */
+
+/* Font Weight Utilities */
+.text-regular,
+.font-weight-400 {
+    font-weight: 400;
+}
+
+.text-medium,
+.font-weight-500 {
+    font-weight: 500;
+}
+
+.text-semibold,
+.font-weight-600 {
+    font-weight: 600;
+}
+
+.text-bold,
+.font-weight-700 {
+    font-weight: 700;
+}
+
+/* Font Size Utilities */
+.text-small,
+.font-size-13 {
+    font-size: 13px;
+}
+
+.text-base,
+.font-size-17 {
+    font-size: 17px;
+}
+
+.text-large,
+.font-size-22 {
+    font-size: 22px;
+}
+
+/* ============================================
+   TASK 2: CSS стили для лендинга
+   ============================================ */
+
+/* Лендинг - общие стили */
+#landing {
+    background: var(--landing-bg);
+    color: var(--landing-text);
+    min-height: 100vh;
+}
+
+/* Хедер лендинга */
+.landing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    position: sticky;
+    top: 0;
+    background: rgba(13, 13, 26, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-bottom: 1px solid var(--landing-border);
+}
+
+.landing-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--landing-text);
+}
+
+.landing-login-btn {
+    background: transparent;
+    border: 1px solid var(--landing-border);
+    color: var(--landing-text);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.landing-login-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--landing-accent);
+}
+
+/* Hero секция */
+.landing-hero {
+    text-align: center;
+    padding: 80px 24px 60px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.landing-hero h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.landing-hero .subtitle {
+    font-size: 20px;
+    color: var(--landing-text-secondary);
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+.landing-cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: var(--landing-accent);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: #4A8FE7;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--landing-text);
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 1px solid var(--landing-border);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Секция возможностей */
+.landing-features {
+    padding: 80px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.landing-section-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.landing-section-subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: var(--landing-text-secondary);
+    margin-bottom: 48px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.feature-card {
+    background: var(--landing-card-bg);
+    border: 1px solid var(--landing-border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--landing-accent);
+}
+
+.feature-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.feature-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    color: var(--landing-text-secondary);
+    line-height: 1.6;
+}
+
+/* Секция документов */
+.landing-documents {
+    padding: 80px 24px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.document-badge {
+    background: var(--landing-card-bg);
+    border: 1px solid var(--landing-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.document-badge:hover {
+    transform: scale(1.05);
+    border-color: var(--landing-accent);
+}
+
+.document-badge-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.document-badge-title {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Секция тарифов */
+.landing-pricing {
+    padding: 80px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.pricing-card {
+    background: var(--landing-card-bg);
+    border: 1px solid var(--landing-border);
+    border-radius: 16px;
+    padding: 32px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.pricing-card.popular {
+    border-color: var(--landing-accent);
+    transform: scale(1.05);
+}
+
+.pricing-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--landing-accent);
+    color: white;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pricing-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.pricing-price {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.pricing-period {
+    color: var(--landing-text-secondary);
+    margin-bottom: 24px;
+}
+
+.pricing-features {
+    list-style: none;
+    margin-bottom: 24px;
+}
+
+.pricing-features li {
+    padding: 8px 0;
+    color: var(--landing-text-secondary);
+}
+
+.pricing-features li:before {
+    content: "✓ ";
+    color: var(--landing-accent);
+    font-weight: 700;
+    margin-right: 8px;
+}
+
+.pricing-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--landing-accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pricing-btn:hover {
+    background: #4A8FE7;
+}
+
+/* Секция FAQ */
+.landing-faq {
+    padding: 80px 24px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    background: var(--landing-card-bg);
+    border: 1px solid var(--landing-border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.faq-question {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.faq-question:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.faq-icon {
+    transition: transform 0.3s;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 500px;
+}
+
+.faq-answer-content {
+    padding: 0 20px 20px;
+    color: var(--landing-text-secondary);
+    line-height: 1.6;
+}
+
+/* Футер */
+.landing-footer {
+    padding: 60px 24px 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid var(--landing-border);
+}
+
+.footer-warning {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    padding: 24px;
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    border-radius: 12px;
+}
+
+.footer-warning h3 {
+    color: #FF9800;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-warning p {
+    color: var(--landing-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.footer-copyright {
+    text-align: center;
+    color: var(--landing-text-secondary);
+    font-size: 14px;
+}
+
+/* Блокировка ландшафтной ориентации */
+#portrait-lock-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--landing-bg);
+    color: var(--landing-text);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+}
+
+.plo-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    font-size: 64px;
+    animation: plo-rotate 2.2s cubic-bezier(.5,.1,.5,.9) infinite;
+}
+
+@keyframes plo-rotate {
+    0%, 15% { transform: rotate(-90deg); }
+    50%, 65% { transform: rotate(0deg); }
+    100% { transform: rotate(-90deg); }
+}
+
+.plo-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.plo-text {
+    font-size: 14px;
+    color: var(--landing-text-secondary);
+    line-height: 1.5;
+    max-width: 280px;
+}
+
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+    body > *:not(#portrait-lock-overlay) {
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+    #portrait-lock-overlay {
+        display: flex !important;
+    }
+}
+
+/* Адаптивность лендинга */
+@media (max-width: 768px) {
+    .landing-hero h1 {
+        font-size: 36px;
+    }
+    
+    .landing-hero .subtitle {
+        font-size: 16px;
+    }
+    
+    .landing-section-title {
+        font-size: 28px;
+    }
+    
+    .features-grid,
+    .documents-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.popular {
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   TASK 3: CSS стили для приложения
+   ============================================ */
+
+/* Приложение - скрыто по умолчанию */
+#app {
+    display: none;
+    background: var(--app-bg);
+    min-height: 100vh;
+}
+
+#app.active {
+    display: block;
+}
+
+/* Шапка приложения */
+.app-header {
+    background: var(--app-card-bg);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--app-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.app-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--app-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+
+.app-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-text);
+}
+
+.app-header-right {
+    display: flex;
+    gap: 16px;
+}
+
+.app-icon-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--app-text);
+    cursor: pointer;
+    padding: 8px;
+}
+
+/* Главный экран */
+.app-main {
+    padding-bottom: 80px;
+}
+
+/* Горизонтальные пиллсы */
+.pills-section {
+    padding: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.pills-section::-webkit-scrollbar {
+    display: none;
+}
+
+.pills-container {
+    display: flex;
+    gap: 12px;
+}
+
+.pill {
+    background: var(--app-card-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 20px;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--app-text);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pill:hover {
+    background: var(--app-primary);
+    color: white;
+    border-color: var(--app-primary);
+}
+
+/* Блок начислений */
+.no-charges-section {
+    margin: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--app-primary) 0%, #1440C0 100%);
+    border-radius: 16px;
+    color: white;
+}
+
+.no-charges-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.no-charges-subtitle {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* Секция документов */
+.documents-section {
+    padding: 16px;
+}
+
+.section-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--app-text);
+    margin-bottom: 16px;
+}
+
+.documents-grid-app {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.document-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.document-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 8px;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.document-icon::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 16px 0 0 16px;
+}
+
+.document-item:active .document-icon {
+    transform: scale(0.95);
+}
+
+.document-label {
+    font-size: 13px;
+    text-align: center;
+    color: var(--app-text);
+    font-weight: 500;
+}
+
+/* Цвета документов */
+.doc-passport {
+    background: rgba(31, 80, 232, 0.1);
+}
+
+.doc-passport::before {
+    background: var(--doc-passport);
+}
+
+.doc-snils {
+    background: rgba(52, 199, 89, 0.1);
+}
+
+.doc-snils::before {
+    background: var(--doc-snils);
+}
+
+.doc-oms {
+    background: rgba(90, 200, 250, 0.1);
+}
+
+.doc-oms::before {
+    background: var(--doc-oms);
+}
+
+.doc-inn {
+    background: rgba(255, 149, 0, 0.1);
+}
+
+.doc-inn::before {
+    background: var(--doc-inn);
+}
+
+.doc-driver {
+    background: rgba(175, 82, 222, 0.1);
+}
+
+.doc-driver::before {
+    background: var(--doc-driver);
+}
+
+.doc-all {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Секция сервисов */
+.services-section {
+    padding: 16px;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.service-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.service-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--app-card-bg);
+    border: 1px solid var(--app-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 8px;
+    transition: transform 0.2s;
+}
+
+.service-item:active .service-icon {
+    transform: scale(0.95);
+}
+
+.service-label {
+    font-size: 13px;
+    text-align: center;
+    color: var(--app-text);
+    font-weight: 500;
+}
+
+/* Нижняя навигация */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding-top: var(--spacing-xs);
+    padding-bottom: 20px; /* Safe area для iOS */
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border-color);
+    box-shadow: var(--shadow-nav);
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: color 0.2s;
+    min-width: 56px;
+}
+
+.nav-item.active {
+    color: var(--primary-blue);
+}
+
+.nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    margin-bottom: 4px;
+    position: relative;
+}
+
+.nav-icon svg {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    display: block;
+}
+
+.nav-icon-fallback {
+    display: none;
+    font-size: 24px;
+}
+
+/* Fallback для браузеров без поддержки SVG */
+@supports not (fill: currentColor) {
+    .nav-icon svg {
+        display: none;
+    }
+    .nav-icon-fallback {
+        display: block;
+    }
+}
+
+/* Fallback для backdrop-filter */
+@supports not (backdrop-filter: blur(20px)) {
+    .bottom-nav {
+        background: rgba(255, 255, 255, 1);
+    }
+}
+
+/* Модальные окна */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--app-text-secondary);
+    cursor: pointer;
+}
+
+.modal-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--app-text);
+}
+
+.modal-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    font-size: 17px;
+    margin-bottom: 16px;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--app-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.modal-error {
+    color: #ff3b30;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+/* QR-код модальное окно */
+#qr-canvas {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Адаптивность приложения */
+@media (max-width: 768px) {
+    .documents-grid-app,
+    .services-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .documents-grid-app,
+    .services-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+    
+    .document-icon,
+    .service-icon {
+        width: 56px;
+        height: 56px;
+    }
+}
+
+/* Скрытие элементов */
+.hidden {
+    display: none !important;
+}
+
+/* ============================================
+   TASK 8: Стили для страниц документов
+   ============================================ */
+
+/* Общие стили для страниц документов */
+.document-page {
+    display: none;
+    background: var(--app-bg);
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+.document-page.active {
+    display: block;
+}
+
+.document-header {
+    background: var(--app-card-bg);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--app-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--app-text);
+    cursor: pointer;
+    padding: 8px;
+}
+
+.document-header-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-text);
+    flex: 1;
+}
+
+.document-content {
+    padding: 16px;
+}
+
+/* Карточка документа */
+.doc-card-view {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--app-shadow);
+}
+
+.doc-card-title {
+    font-size: 13px;
+    color: var(--app-text-secondary);
+    margin-bottom: 8px;
+}
+
+.doc-card-value {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-text);
+    margin-bottom: 16px;
+}
+
+.doc-card-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.doc-card-col {
+    flex: 1;
+}
+
+.doc-info-item {
+    margin-bottom: 16px;
+}
+
+.doc-info-item:last-child {
+    margin-bottom: 0;
+}
+
+.doc-info-label {
+    font-size: 13px;
+    color: var(--app-text-secondary);
+    margin-bottom: 4px;
+}
+
+.doc-info-value {
+    font-size: 17px;
+    color: var(--app-text);
+    font-weight: 500;
+}
+
+/* Кнопки действий с документом */
+.doc-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.doc-action-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.doc-action-btn-primary {
+    background: var(--app-primary);
+    color: white;
+}
+
+.doc-action-btn-primary:active {
+    background: #1440C0;
+}
+
+.doc-action-btn-secondary {
+    background: var(--app-bg);
+    color: var(--app-text);
+    border: 1px solid var(--app-border);
+}
+
+.doc-action-btn-secondary:active {
+    background: #e0e0e0;
+}
+
+/* Скрытые данные */
+.doc-hidden-data {
+    display: none;
+}
+
+.doc-hidden-data.visible {
+    display: block;
+}
+
+/* ============================================
+   TASK 11: Стили для страницы профиля
+   ============================================ */
+
+.profile-page {
+    display: none;
+    background: var(--app-bg);
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+.profile-page.active {
+    display: block;
+}
+
+.profile-header {
+    background: var(--app-card-bg);
+    padding: 24px 16px;
+    text-align: center;
+    box-shadow: var(--app-shadow);
+}
+
+.profile-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--app-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 auto 16px;
+}
+
+.profile-name {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--app-text);
+    margin-bottom: 4px;
+}
+
+.profile-email {
+    font-size: 13px;
+    color: var(--app-text-secondary);
+}
+
+.profile-content {
+    padding: 16px;
+}
+
+.profile-section {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--app-shadow);
+}
+
+.profile-section-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-text);
+    margin-bottom: 16px;
+}
+
+.profile-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--app-border);
+}
+
+.profile-info-item:last-child {
+    border-bottom: none;
+}
+
+.profile-info-label {
+    font-size: 13px;
+    color: var(--app-text-secondary);
+}
+
+.profile-info-value {
+    font-size: 13px;
+    color: var(--app-text);
+    font-weight: 500;
+}
+
+/* Переключатели настроек */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--app-border);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-label {
+    font-size: 13px;
+    color: var(--app-text);
+}
+
+.toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 28px;
+    background: #ccc;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.toggle-switch.active {
+    background: var(--app-primary);
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.toggle-switch.active::after {
+    transform: translateX(22px);
+}
+
+/* Селект для версии паспорта */
+.setting-select {
+    padding: 8px 12px;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--app-text);
+    background: var(--app-card-bg);
+    cursor: pointer;
+}
+
+/* Кнопка выхода */
+.logout-btn {
+    width: 100%;
+    padding: 14px;
+    background: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+}
+
+.logout-btn:active {
+    background: #cc2f26;
+}
+
+/* ============================================
+   Дополнительные стили для навигации
+   ============================================ */
+
+.services-page,
+.documents-list-page {
+    display: none;
+    background: var(--app-bg);
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+.services-page.active,
+.documents-list-page.active {
+    display: block;
+}
+
+.page-header {
+    background: var(--app-card-bg);
+    padding: 16px;
+    box-shadow: var(--app-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.page-header-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--app-text);
+}
+
+.page-content {
+    padding: 16px;
+}
+
+.service-category {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--app-shadow);
+}
+
+.service-category-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-text);
+    margin-bottom: 12px;
+}
+
+.service-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.service-list-item {
+    padding: 12px;
+    background: var(--app-bg);
+    border-radius: 8px;
+    color: var(--app-text);
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.service-list-item:active {
+    background: #e0e0e0;
+}
+
+.document-list-item {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--app-shadow);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: var(--app-text);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.document-list-item:active {
+    transform: scale(0.98);
+}
+
+.document-list-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    position: relative;
+}
+
+.document-list-icon::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 12px 0 0 12px;
+}
+
+.document-list-info {
+    flex: 1;
+}
+
+.document-list-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.document-list-subtitle {
+    font-size: 13px;
+    color: var(--app-text-secondary);
+}
+
+/* ============================================
+   TASK 12: Стили админ-панели
+   ============================================ */
+
+.admin-panel {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--app-bg);
+    z-index: 3000;
+    overflow-y: auto;
+}
+
+.admin-panel.active {
+    display: block;
+}
+
+.admin-content {
+    padding: 16px;
+    padding-bottom: 40px;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: var(--app-card-bg);
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.admin-tab {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--app-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.admin-tab.active {
+    background: var(--app-primary);
+    color: white;
+}
+
+.admin-tab-content {
+    display: none;
+}
+
+.admin-tab-content.active {
+    display: block;
+}
+
+.admin-section {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--app-shadow);
+}
+
+.admin-section-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--app-text);
+    margin-bottom: 16px;
+}
+
+.admin-doc-card {
+    background: var(--app-bg);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.admin-doc-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--app-text);
+    transition: background 0.2s;
+}
+
+.admin-doc-header:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.admin-arrow {
+    transition: transform 0.3s;
+}
+
+.admin-doc-card.open .admin-arrow {
+    transform: rotate(180deg);
+}
+
+.admin-doc-form {
+    padding: 0 16px 16px;
+}
+
+.admin-doc-form.hidden {
+    display: none;
+}
+
+.admin-form-group {
+    margin-bottom: 16px;
+}
+
+.admin-form-group label {
+    display: block;
+    font-size: 13px;
+    color: var(--app-text-secondary);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.admin-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--app-text);
+    background: var(--app-card-bg);
+}
+
+.admin-input:focus {
+    outline: none;
+    border-color: var(--app-primary);
+}
+
+.admin-save-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--app-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.admin-save-btn:active {
+    background: #1440C0;
+}
+
+.admin-logs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-log-item {
+    background: var(--app-bg);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-log-info {
+    flex: 1;
+}
+
+.admin-log-key {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--app-text);
+    margin-bottom: 4px;
+    font-family: monospace;
+}
+
+.admin-log-date {
+    font-size: 13px;
+    color: var(--app-text-secondary);
+}
+
+.admin-log-action {
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.admin-log-action.generated {
+    background: #34C759;
+    color: white;
+}
+
+.admin-log-action.login {
+    background: var(--app-primary);
+    color: white;
+}
+</style>
+
+
+</head>
+<body>
+
+<!-- ============================================
+     TASK 4: Лендинг страница
+     ============================================ -->
+<div id="landing">
+    <!-- Хедер -->
+    <header class="landing-header">
+        <div class="landing-logo">ГосFake</div>
+        <button class="landing-login-btn" onclick="showLoginModal()">Войти</button>
+    </header>
+
+    <!-- Hero секция -->
+    <section class="landing-hero">
+        <h1>Фейк Госуслуги — документы в одном клике</h1>
+        <p class="subtitle">Развлекательный онлайн-сервис для создания реалистичных цифровых документов: паспорт РФ, СНИЛС, ИНН, ОМС, водительское удостоверение. Вход через ключ доступа за 3 секунды.</p>
+        <div class="landing-cta-buttons">
+            <button class="btn-primary" onclick="generateKey()">Начать бесплатно</button>
+            <button class="btn-secondary" onclick="showLoginModal()">Тарифы →</button>
+        </div>
+    </section>
+
+    <!-- Секция возможностей -->
+    <section class="landing-features">
+        <h2 class="landing-section-title">Возможности</h2>
+        <p class="landing-section-subtitle">Всё что нужно</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3>Реалистичные документы</h3>
+                <p>Паспорт, СНИЛС, ИНН, ОМС и ВУ — каждый документ с точной детализацией.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Вход за 3 секунды</h3>
+                <p>Генерация ключа доступа — никаких паролей и регистраций.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Как настоящее приложение</h3>
+                <p>Точная копия интерфейса Госуслуг. Анимации, переходы — всё как в оригинале.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция документов -->
+    <section class="landing-documents">
+        <h2 class="landing-section-title">Документы</h2>
+        <p class="landing-section-subtitle">Что входит</p>
+        <div class="documents-grid">
+            <div class="document-badge">
+                <div class="document-badge-icon">🛂</div>
+                <div class="document-badge-title">Паспорт РФ</div>
+            </div>
+            <div class="document-badge">
+                <div class="document-badge-icon">🟢</div>
+                <div class="document-badge-title">СНИЛС</div>
+            </div>
+            <div class="document-badge">
+                <div class="document-badge-icon">🔢</div>
+                <div class="document-badge-title">ИНН</div>
+            </div>
+            <div class="document-badge">
+                <div class="document-badge-icon">🏥</div>
+                <div class="document-badge-title">Полис ОМС</div>
+            </div>
+            <div class="document-badge">
+                <div class="document-badge-icon">🚗</div>
+                <div class="document-badge-title">Водительское уд.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция тарифов -->
+    <section class="landing-pricing">
+        <h2 class="landing-section-title">Тарифы</h2>
+        <p class="landing-section-subtitle">Выберите план</p>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Free</h3>
+                <div class="pricing-price">0₽</div>
+                <div class="pricing-period">навсегда</div>
+                <ul class="pricing-features">
+                    <li>Паспорт (2 просмотра/день)</li>
+                    <li>СНИЛС, ОМС</li>
+                    <li>ИНН, ВУ</li>
+                    <li>2-я версия паспорта</li>
+                    <li>Загрузка фото</li>
+                </ul>
+                <button class="pricing-btn" onclick="generateKey()">Начать</button>
+            </div>
+            <div class="pricing-card popular">
+                <div class="pricing-badge">ПОПУЛЯРНЫЙ</div>
+                <h3>Pro</h3>
+                <div class="pricing-price">99₽</div>
+                <div class="pricing-period">в месяц</div>
+                <ul class="pricing-features">
+                    <li>Паспорт (безлимит)</li>
+                    <li>СНИЛС (5/день)</li>
+                    <li>ОМС (5/день)</li>
+                    <li>2-я версия паспорта</li>
+                    <li>ИНН, ВУ</li>
+                    <li>Загрузка фото</li>
+                </ul>
+                <button class="pricing-btn" onclick="generateKey()">Получить</button>
+            </div>
+            <div class="pricing-card">
+                <h3>Premium</h3>
+                <div class="pricing-price">200₽</div>
+                <div class="pricing-period">в месяц</div>
+                <ul class="pricing-features">
+                    <li>Паспорт (безлимит)</li>
+                    <li>СНИЛС, ОМС (безлимит)</li>
+                    <li>ИНН, ВУ (безлимит)</li>
+                    <li>2-я версия паспорта</li>
+                    <li>Загрузка фото</li>
+                    <li>Приоритетная поддержка</li>
+                </ul>
+                <button class="pricing-btn" onclick="generateKey()">Получить</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция FAQ -->
+    <section class="landing-faq">
+        <h2 class="landing-section-title">FAQ</h2>
+        <p class="landing-section-subtitle">Вопросы и ответы</p>
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Что такое фейк Госуслуги?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        ГосFake — это развлекательный пародийный сервис, имитирующий интерфейс приложения «Госуслуги». Все данные вымышлены и вводятся самим пользователем. Сервис не имеет отношения к реальным государственным системам.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Это законно?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Да. Сервис носит исключительно развлекательный и пародийный характер. Мы не подделываем документы — все данные вводятся пользователем вручную и являются вымышленными. Использование сервиса для противоправных целей запрещено.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Как авторизоваться?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Нажмите «Начать бесплатно» — система сгенерирует ключ доступа формата GOS-XXXXXXXXXXXX. Ключ действителен 24 часа. Сохраните его для повторного входа.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Какие документы можно создать?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Паспорт РФ (две версии), СНИЛС, ИНН, полис ОМС и водительское удостоверение — каждый документ выглядит реалистично и повторяет интерфейс настоящего приложения Госуслуги.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Безопасно ли хранить данные?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Все данные хранятся локально в вашем браузере (LocalStorage). Мы не отправляем данные на сервер. Данные доступны только на вашем устройстве.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Для чего можно использовать?</span>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        Для развлечения, пранков среди друзей, создания контента для социальных сетей, изучения интерфейсов мобильных приложений. Использование в мошеннических целях строго запрещено.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="landing-footer">
+        <div class="footer-warning">
+            <h3>⚠️ Правовая информация</h3>
+            <p>Данный сервис является развлекательным пародийным проектом и не имеет никакого отношения к порталу «Госуслуги» или каким-либо государственным органам Российской Федерации.</p>
+            <p>Все данные, отображаемые в сервисе, являются вымышленными и вводятся самим пользователем.</p>
+            <p>Сервис не создаёт, не подделывает и не распространяет реальные документы. Результаты работы сервиса не имеют юридической силы.</p>
+            <p>Используя сервис, вы соглашаетесь, что он предназначен исключительно для развлечения. Администрация не несёт ответственности за неправомерное использование.</p>
+        </div>
+        <div class="footer-copyright">
+            © 2025 ГосFake. Развлекательный сервис. Все данные вымышлены и не являются реальными документами.<br>
+            Не является государственным сервисом. Не связан с порталом «Госуслуги».
+        </div>
+    </footer>
+</div>
+
+<!-- Блокировка ландшафтной ориентации -->
+<div id="portrait-lock-overlay">
+    <div class="plo-icon">📱</div>
+    <div class="plo-title">Поверните устройство</div>
+    <div class="plo-text">Приложение работает только в портретной ориентации</div>
+</div>
+
+<!-- ============================================
+     Приложение (скрыто по умолчанию)
+     ============================================ -->
+<div id="app">
+    <!-- Шапка -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <div class="app-avatar" id="app-avatar" title="Долгое нажатие для админ-панели">ИИ</div>
+            <div class="app-title">Госуслуги</div>
+        </div>
+        <div class="app-header-right">
+            <button class="app-icon-btn">🔔</button>
+        </div>
+    </header>
+
+    <!-- Главный экран -->
+    <main class="app-main" id="main-screen">
+        <!-- Горизонтальные пиллсы -->
+        <section class="pills-section">
+            <div class="pills-container">
+                <div class="pill">Электронная трудовая</div>
+                <div class="pill">Запись к врачу</div>
+                <div class="pill">Личный счёт СФР</div>
+                <div class="pill">Запись в МВД</div>
+                <div class="pill">Загранпаспорт</div>
+            </div>
+        </section>
+
+        <!-- Блок начислений -->
+        <section class="no-charges-section">
+            <div class="no-charges-title">Нет начислений</div>
+            <div class="no-charges-subtitle">Здесь будут отображаться ваши начисления и выплаты</div>
+        </section>
+
+        <!-- Документы для предъявления -->
+        <section class="documents-section">
+            <h2 class="section-title">Документы для предъявления</h2>
+            <div class="documents-grid-app">
+                <a href="#" class="document-item" onclick="showDocumentPage('passport'); return false;">
+                    <div class="document-icon doc-passport">🛂</div>
+                    <div class="document-label">Паспорт</div>
+                </a>
+                <a href="#" class="document-item" onclick="showDocumentPage('oms'); return false;">
+                    <div class="document-icon doc-oms">🏥</div>
+                    <div class="document-label">Полис ОМС</div>
+                </a>
+                <a href="#" class="document-item" onclick="showDocumentPage('snils'); return false;">
+                    <div class="document-icon doc-snils">🟢</div>
+                    <div class="document-label">СНИЛС</div>
+                </a>
+                <a href="#" class="document-item" onclick="navigateTo('documents-list'); return false;">
+                    <div class="document-icon doc-all">📄</div>
+                    <div class="document-label">Все</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Сервисы -->
+        <section class="services-section">
+            <h2 class="section-title">Сервисы</h2>
+            <div class="services-grid">
+                <a href="#" class="service-item" onclick="alert('Раздел Здоровье'); return false;">
+                    <div class="service-icon">❤️</div>
+                    <div class="service-label">Здоровье</div>
+                </a>
+                <a href="#" class="service-item" onclick="alert('Раздел Авто'); return false;">
+                    <div class="service-icon">🚗</div>
+                    <div class="service-label">Авто</div>
+                </a>
+                <a href="#" class="service-item" onclick="alert('Раздел Дом'); return false;">
+                    <div class="service-icon">🏠</div>
+                    <div class="service-label">Дом</div>
+                </a>
+                <a href="#" class="service-item" onclick="alert('Другие сервисы'); return false;">
+                    <div class="service-icon">⚙️</div>
+                    <div class="service-label">Другие</div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================
+         TASK 8: Страницы документов
+         ============================================ -->
+    
+    <!-- Страница паспорта -->
+    <div id="passport-page" class="document-page">
+        <header class="document-header">
+            <button class="back-btn" onclick="backToMain()">←</button>
+            <h1 class="document-header-title">Паспорт РФ</h1>
+        </header>
+        <div class="document-content">
+            <div class="doc-card-view">
+                <div class="doc-card-title">Серия и номер</div>
+                <div class="doc-card-value" id="passport-number">4509 123456</div>
+                
+                <div class="doc-info-item">
+                    <div class="doc-info-label">Фамилия Имя Отчество</div>
+                    <div class="doc-info-value" id="passport-fullname">ИВАНОВ ИВАН ИВАНОВИЧ</div>
+                </div>
+                
+                <div class="doc-info-item">
+                    <div class="doc-info-label">Дата рождения</div>
+                    <div class="doc-info-value" id="passport-birthdate">01.01.1990</div>
+                </div>
+                
+                <div class="doc-info-item">
+                    <div class="doc-info-label">Место рождения</div>
+                    <div class="doc-info-value" id="passport-birthplace">Г. МОСКВА</div>
+                </div>
+                
+                <div class="doc-hidden-data" id="passport-hidden">
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Дата выдачи</div>
+                        <div class="doc-info-value" id="passport-issuedate">15.03.2015</div>
+                    </div>
+                    
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Кем выдан</div>
+                        <div class="doc-info-value" id="passport-issuedby">ОТДЕЛЕНИЕМ УФМС РОССИИ ПО Г. МОСКВЕ</div>
+                    </div>
+                    
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Код подразделения</div>
+                        <div class="doc-info-value" id="passport-code">450-009</div>
+                    </div>
+                    
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Пол</div>
+                        <div class="doc-info-value" id="passport-gender">МУЖ.</div>
+                    </div>
+                </div>
+                
+                <div class="doc-actions">
+                    <button class="doc-action-btn doc-action-btn-secondary" onclick="toggleHiddenData('passport')">
+                        <span id="passport-toggle-text">Показать все данные</span>
+                    </button>
+                    <button class="doc-action-btn doc-action-btn-primary" onclick="showQRForDocument('passport')">QR-код</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница СНИЛС -->
+    <div id="snils-page" class="document-page">
+        <header class="document-header">
+            <button class="back-btn" onclick="backToMain()">←</button>
+            <h1 class="document-header-title">СНИЛС</h1>
+        </header>
+        <div class="document-content">
+            <div class="doc-card-view">
+                <div class="doc-card-title">Номер</div>
+                <div class="doc-card-value" id="snils-number">123-456-789 00</div>
+                
+                <div class="doc-info-item">
+                    <div class="doc-info-label">Фамилия Имя Отчество</div>
+                    <div class="doc-info-value" id="snils-fullname">ИВАНОВ ИВАН ИВАНОВИЧ</div>
+                </div>
+                
+                <div class="doc-hidden-data" id="snils-hidden">
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Дата выдачи</div>
+                        <div class="doc-info-value" id="snils-issuedate">10.05.2010</div>
+                    </div>
+                </div>
+                
+                <div class="doc-actions">
+                    <button class="doc-action-btn doc-action-btn-secondary" onclick="toggleHiddenData('snils')">
+                        <span id="snils-toggle-text">Показать все данные</span>
+                    </button>
+                    <button class="doc-action-btn doc-action-btn-primary" onclick="showQRForDocument('snils')">QR-код</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница ОМС -->
+    <div id="oms-page" class="document-page">
+        <header class="document-header">
+            <button class="back-btn" onclick="backToMain()">←</button>
+            <h1 class="document-header-title">Полис ОМС</h1>
+        </header>
+        <div class="document-content">
+            <div class="doc-card-view">
+                <div class="doc-card-title">Номер полиса</div>
+                <div class="doc-card-value" id="oms-number">1234567890123456</div>
+                
+                <div class="doc-info-item">
+                    <div class="doc-info-label">Фамилия Имя Отчество</div>
+                    <div class="doc-info-value" id="oms-fullname">ИВАНОВ ИВАН ИВАНОВИЧ</div>
+                </div>
+                
+                <div class="doc-hidden-data" id="oms-hidden">
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Дата выдачи</div>
+                        <div class="doc-info-value" id="oms-issuedate">01.01.2020</div>
+                    </div>
+                    
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Действителен до</div>
+                        <div class="doc-info-value" id="oms-validuntil">БЕССРОЧНО</div>
+                    </div>
+                    
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Страховая компания</div>
+                        <div class="doc-info-value" id="oms-company">АО «МАКС-М»</div>
+                    </div>
+                </div>
+                
+                <div class="doc-actions">
+                    <button class="doc-action-btn doc-action-btn-secondary" onclick="toggleHiddenData('oms')">
+                        <span id="oms-toggle-text">Показать все данные</span>
+                    </button>
+                    <button class="doc-action-btn doc-action-btn-primary" onclick="showQRForDocument('oms')">QR-код</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница ИНН -->
+    <div id="inn-page" class="document-page">
+        <header class="document-header">
+            <button class="back-btn" onclick="backToMain()">←</button>
+            <h1 class="document-header-title">ИНН</h1>
+        </header>
+        <div class="document-content">
+            <div class="doc-card-view">
+                <div class="doc-card-title">Номер</div>
+                <div class="doc-card-value" id="inn-number">773012345678</div>
+                
+                <div class="doc-info-item">
+                    <div class="doc-info-label">Фамилия Имя Отчество</div>
+                    <div class="doc-info-value" id="inn-fullname">ИВАНОВ ИВАН ИВАНОВИЧ</div>
+                </div>
+                
+                <div class="doc-hidden-data" id="inn-hidden">
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Дата выдачи</div>
+                        <div class="doc-info-value" id="inn-issuedate">20.06.2012</div>
+                    </div>
+                    
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Кем выдан</div>
+                        <div class="doc-info-value" id="inn-issuedby">ИФНС № 30 ПО Г. МОСКВЕ</div>
+                    </div>
+                </div>
+                
+                <div class="doc-actions">
+                    <button class="doc-action-btn doc-action-btn-secondary" onclick="toggleHiddenData('inn')">
+                        <span id="inn-toggle-text">Показать все данные</span>
+                    </button>
+                    <button class="doc-action-btn doc-action-btn-primary" onclick="showQRForDocument('inn')">QR-код</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница водительского удостоверения -->
+    <div id="driver-page" class="document-page">
+        <header class="document-header">
+            <button class="back-btn" onclick="backToMain()">←</button>
+            <h1 class="document-header-title">Водительское удостоверение</h1>
+        </header>
+        <div class="document-content">
+            <div class="doc-card-view">
+                <div class="doc-card-title">Номер</div>
+                <div class="doc-card-value" id="driver-number">77 АА 123456</div>
+                
+                <div class="doc-info-item">
+                    <div class="doc-info-label">Фамилия Имя Отчество</div>
+                    <div class="doc-info-value" id="driver-fullname">ИВАНОВ ИВАН ИВАНОВИЧ</div>
+                </div>
+                
+                <div class="doc-info-item">
+                    <div class="doc-info-label">Категории</div>
+                    <div class="doc-info-value" id="driver-categories">B, C</div>
+                </div>
+                
+                <div class="doc-hidden-data" id="driver-hidden">
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Дата рождения</div>
+                        <div class="doc-info-value" id="driver-birthdate">01.01.1990</div>
+                    </div>
+                    
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Дата выдачи</div>
+                        <div class="doc-info-value" id="driver-issuedate">15.07.2018</div>
+                    </div>
+                    
+                    <div class="doc-info-item">
+                        <div class="doc-info-label">Действительно до</div>
+                        <div class="doc-info-value" id="driver-validuntil">15.07.2028</div>
+                    </div>
+                </div>
+                
+                <div class="doc-actions">
+                    <button class="doc-action-btn doc-action-btn-secondary" onclick="toggleHiddenData('driver')">
+                        <span id="driver-toggle-text">Показать все данные</span>
+                    </button>
+                    <button class="doc-action-btn doc-action-btn-primary" onclick="showQRForDocument('driver')">QR-код</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         TASK 10: Страница услуг
+         ============================================ -->
+    <div id="services-page" class="services-page">
+        <header class="page-header">
+            <h1 class="page-header-title">Услуги</h1>
+        </header>
+        <div class="page-content">
+            <div class="service-category">
+                <h2 class="service-category-title">❤️ Здоровье</h2>
+                <div class="service-list">
+                    <a href="#" class="service-list-item" onclick="alert('Запись к врачу'); return false;">
+                        <span>Запись к врачу</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#" class="service-list-item" onclick="alert('Электронная медкарта'); return false;">
+                        <span>Электронная медкарта</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#" class="service-list-item" onclick="alert('Результаты анализов'); return false;">
+                        <span>Результаты анализов</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="service-category">
+                <h2 class="service-category-title">🚗 Авто</h2>
+                <div class="service-list">
+                    <a href="#" class="service-list-item" onclick="alert('Штрафы ГИБДД'); return false;">
+                        <span>Штрафы ГИБДД</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#" class="service-list-item" onclick="alert('Запись в ГИБДД'); return false;">
+                        <span>Запись в ГИБДД</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#" class="service-list-item" onclick="alert('Транспортный налог'); return false;">
+                        <span>Транспортный налог</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="service-category">
+                <h2 class="service-category-title">🏠 Дом</h2>
+                <div class="service-list">
+                    <a href="#" class="service-list-item" onclick="alert('Оплата ЖКХ'); return false;">
+                        <span>Оплата ЖКХ</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#" class="service-list-item" onclick="alert('Показания счётчиков'); return false;">
+                        <span>Показания счётчиков</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#" class="service-list-item" onclick="alert('Налог на имущество'); return false;">
+                        <span>Налог на имущество</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         TASK 10: Страница списка документов
+         ============================================ -->
+    <div id="documents-list-page" class="documents-list-page">
+        <header class="page-header">
+            <h1 class="page-header-title">Документы</h1>
+        </header>
+        <div class="page-content">
+            <a href="#" class="document-list-item" onclick="showDocumentPage('passport'); return false;">
+                <div class="document-list-icon doc-passport">🛂</div>
+                <div class="document-list-info">
+                    <div class="document-list-title">Паспорт РФ</div>
+                    <div class="document-list-subtitle">4509 123456</div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="#" class="document-list-item" onclick="showDocumentPage('snils'); return false;">
+                <div class="document-list-icon doc-snils">🟢</div>
+                <div class="document-list-info">
+                    <div class="document-list-title">СНИЛС</div>
+                    <div class="document-list-subtitle">123-456-789 00</div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="#" class="document-list-item" onclick="showDocumentPage('oms'); return false;">
+                <div class="document-list-icon doc-oms">🏥</div>
+                <div class="document-list-info">
+                    <div class="document-list-title">Полис ОМС</div>
+                    <div class="document-list-subtitle">1234567890123456</div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="#" class="document-list-item" onclick="showDocumentPage('inn'); return false;">
+                <div class="document-list-icon doc-inn">🔢</div>
+                <div class="document-list-info">
+                    <div class="document-list-title">ИНН</div>
+                    <div class="document-list-subtitle">773012345678</div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="#" class="document-list-item" onclick="showDocumentPage('driver'); return false;">
+                <div class="document-list-icon doc-driver">🚗</div>
+                <div class="document-list-info">
+                    <div class="document-list-title">Водительское удостоверение</div>
+                    <div class="document-list-subtitle">77 АА 123456</div>
+                </div>
+                <span>→</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ============================================
+         TASK 11: Страница профиля
+         ============================================ -->
+    <div id="profile-page" class="profile-page">
+        <header class="profile-header">
+            <div class="profile-avatar-large">ИИ</div>
+            <div class="profile-name">Иванов Иван Иванович</div>
+            <div class="profile-email">demo@gosfake.lol</div>
+        </header>
+        
+        <div class="profile-content">
+            <!-- Личные данные -->
+            <div class="profile-section">
+                <h2 class="profile-section-title">Личные данные</h2>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Фамилия</span>
+                    <span class="profile-info-value">Иванов</span>
+                </div>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Имя</span>
+                    <span class="profile-info-value">Иван</span>
+                </div>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Отчество</span>
+                    <span class="profile-info-value">Иванович</span>
+                </div>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Пол</span>
+                    <span class="profile-info-value">Мужской</span>
+                </div>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Дата рождения</span>
+                    <span class="profile-info-value">01.01.1990</span>
+                </div>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Место рождения</span>
+                    <span class="profile-info-value">Г. Москва</span>
+                </div>
+            </div>
+            
+            <!-- Подписка -->
+            <div class="profile-section">
+                <h2 class="profile-section-title">Подписка</h2>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Тариф</span>
+                    <span class="profile-info-value">Free</span>
+                </div>
+                <div class="profile-info-item">
+                    <span class="profile-info-label">Просмотры</span>
+                    <span class="profile-info-value">∞ (неограниченно)</span>
+                </div>
+            </div>
+            
+            <!-- Настройки -->
+            <div class="profile-section">
+                <h2 class="profile-section-title">Настройки</h2>
+                <div class="setting-item">
+                    <span class="setting-label">Тёмная тема</span>
+                    <div class="toggle-switch" id="theme-toggle" onclick="toggleTheme()"></div>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Версия паспорта</span>
+                    <select class="setting-select" id="passport-version-select" onchange="changePassportVersion()">
+                        <option value="1">Версия 1</option>
+                        <option value="2">Версия 2</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Кнопка выхода -->
+            <button class="logout-btn" onclick="logout()">Выйти из аккаунта</button>
+        </div>
+    </div>
+
+    <!-- Нижняя навигация -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-screen="main" onclick="navigateTo('main'); return false;">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span class="nav-icon-fallback">🏠</span>
+            </div>
+            <div>Главная</div>
+        </a>
+        <a href="#" class="nav-item" data-screen="services" onclick="navigateTo('services'); return false;">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+                </svg>
+                <span class="nav-icon-fallback">📋</span>
+            </div>
+            <div>Услуги</div>
+        </a>
+        <a href="#" class="nav-item" data-screen="documents-list" onclick="navigateTo('documents-list'); return false;">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                </svg>
+                <span class="nav-icon-fallback">📄</span>
+            </div>
+            <div>Документы</div>
+        </a>
+        <a href="#" class="nav-item" data-screen="profile" onclick="navigateTo('profile'); return false;">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <span class="nav-icon-fallback">👤</span>
+            </div>
+            <div>Профиль</div>
+        </a>
+    </nav>
+</div>
+
+<!-- Модальное окно входа -->
+<div id="login-modal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('login-modal')">×</button>
+        <h2 class="modal-title">Вход по ключу</h2>
+        <input type="text" id="login-key-input" class="modal-input" placeholder="GOS-XXXXXXXXXXXX" maxlength="20">
+        <button class="modal-btn" onclick="loginWithKey()">Войти</button>
+        <div id="login-error" class="modal-error hidden"></div>
+    </div>
+</div>
+
+<!-- Модальное окно QR-кода -->
+<div id="qr-modal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('qr-modal')">×</button>
+        <h2 class="modal-title">QR-код документа</h2>
+        <div id="qr-canvas"></div>
+    </div>
+</div>
+
+<!-- Модальное окно админ-панели -->
+<div id="admin-modal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('admin-modal')">×</button>
+        <h2 class="modal-title">Админ-панель</h2>
+        <input type="password" id="admin-password-input" class="modal-input" placeholder="Введите пароль">
+        <button class="modal-btn" onclick="checkAdminPassword()">Войти</button>
+        <div id="admin-error" class="modal-error hidden"></div>
+    </div>
+</div>
+
+<!-- ============================================
+     TASK 12: Полная админ-панель
+     ============================================ -->
+<div id="admin-panel" class="admin-panel">
+    <header class="document-header">
+        <button class="back-btn" onclick="closeAdminPanel()">←</button>
+        <h1 class="document-header-title">Админ-панель</h1>
+    </header>
+    
+    <div class="admin-content">
+        <!-- Вкладки -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchAdminTab('documents')">Документы</button>
+            <button class="admin-tab" onclick="switchAdminTab('logs')">Логи входов</button>
+        </div>
+        
+        <!-- Вкладка документов -->
+        <div id="admin-tab-documents" class="admin-tab-content active">
+            <div class="admin-section">
+                <h3 class="admin-section-title">Редактирование документов</h3>
+                
+                <!-- Паспорт -->
+                <div class="admin-doc-card">
+                    <div class="admin-doc-header" onclick="toggleAdminDoc('passport')">
+                        <span>🛂 Паспорт РФ</span>
+                        <span class="admin-arrow">▼</span>
+                    </div>
+                    <div id="admin-passport" class="admin-doc-form hidden">
+                        <div class="admin-form-group">
+                            <label>Серия и номер</label>
+                            <input type="text" id="admin-passport-number" class="admin-input" value="4509 123456">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>ФИО</label>
+                            <input type="text" id="admin-passport-fullname" class="admin-input" value="ИВАНОВ ИВАН ИВАНОВИЧ">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Дата рождения</label>
+                            <input type="text" id="admin-passport-birthdate" class="admin-input" value="01.01.1990">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Место рождения</label>
+                            <input type="text" id="admin-passport-birthplace" class="admin-input" value="Г. МОСКВА">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Дата выдачи</label>
+                            <input type="text" id="admin-passport-issuedate" class="admin-input" value="15.03.2015">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Кем выдан</label>
+                            <input type="text" id="admin-passport-issuedby" class="admin-input" value="ОТДЕЛЕНИЕМ УФМС РОССИИ ПО Г. МОСКВЕ">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Код подразделения</label>
+                            <input type="text" id="admin-passport-code" class="admin-input" value="450-009">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Пол</label>
+                            <input type="text" id="admin-passport-gender" class="admin-input" value="МУЖ.">
+                        </div>
+                        <button class="admin-save-btn" onclick="saveDocumentFromAdmin('passport')">Сохранить изменения</button>
+                    </div>
+                </div>
+                
+                <!-- СНИЛС -->
+                <div class="admin-doc-card">
+                    <div class="admin-doc-header" onclick="toggleAdminDoc('snils')">
+                        <span>🟢 СНИЛС</span>
+                        <span class="admin-arrow">▼</span>
+                    </div>
+                    <div id="admin-snils" class="admin-doc-form hidden">
+                        <div class="admin-form-group">
+                            <label>Номер</label>
+                            <input type="text" id="admin-snils-number" class="admin-input" value="123-456-789 00">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>ФИО</label>
+                            <input type="text" id="admin-snils-fullname" class="admin-input" value="ИВАНОВ ИВАН ИВАНОВИЧ">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Дата выдачи</label>
+                            <input type="text" id="admin-snils-issuedate" class="admin-input" value="10.05.2010">
+                        </div>
+                        <button class="admin-save-btn" onclick="saveDocumentFromAdmin('snils')">Сохранить изменения</button>
+                    </div>
+                </div>
+                
+                <!-- ОМС -->
+                <div class="admin-doc-card">
+                    <div class="admin-doc-header" onclick="toggleAdminDoc('oms')">
+                        <span>🏥 Полис ОМС</span>
+                        <span class="admin-arrow">▼</span>
+                    </div>
+                    <div id="admin-oms" class="admin-doc-form hidden">
+                        <div class="admin-form-group">
+                            <label>Номер полиса</label>
+                            <input type="text" id="admin-oms-number" class="admin-input" value="1234567890123456">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>ФИО</label>
+                            <input type="text" id="admin-oms-fullname" class="admin-input" value="ИВАНОВ ИВАН ИВАНОВИЧ">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Дата выдачи</label>
+                            <input type="text" id="admin-oms-issuedate" class="admin-input" value="01.01.2020">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Действителен до</label>
+                            <input type="text" id="admin-oms-validuntil" class="admin-input" value="БЕССРОЧНО">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Страховая компания</label>
+                            <input type="text" id="admin-oms-company" class="admin-input" value="АО «МАКС-М»">
+                        </div>
+                        <button class="admin-save-btn" onclick="saveDocumentFromAdmin('oms')">Сохранить изменения</button>
+                    </div>
+                </div>
+                
+                <!-- ИНН -->
+                <div class="admin-doc-card">
+                    <div class="admin-doc-header" onclick="toggleAdminDoc('inn')">
+                        <span>🔢 ИНН</span>
+                        <span class="admin-arrow">▼</span>
+                    </div>
+                    <div id="admin-inn" class="admin-doc-form hidden">
+                        <div class="admin-form-group">
+                            <label>Номер</label>
+                            <input type="text" id="admin-inn-number" class="admin-input" value="773012345678">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>ФИО</label>
+                            <input type="text" id="admin-inn-fullname" class="admin-input" value="ИВАНОВ ИВАН ИВАНОВИЧ">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Дата выдачи</label>
+                            <input type="text" id="admin-inn-issuedate" class="admin-input" value="20.06.2012">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Кем выдан</label>
+                            <input type="text" id="admin-inn-issuedby" class="admin-input" value="ИФНС № 30 ПО Г. МОСКВЕ">
+                        </div>
+                        <button class="admin-save-btn" onclick="saveDocumentFromAdmin('inn')">Сохранить изменения</button>
+                    </div>
+                </div>
+                
+                <!-- Водительское удостоверение -->
+                <div class="admin-doc-card">
+                    <div class="admin-doc-header" onclick="toggleAdminDoc('driver')">
+                        <span>🚗 Водительское удостоверение</span>
+                        <span class="admin-arrow">▼</span>
+                    </div>
+                    <div id="admin-driver" class="admin-doc-form hidden">
+                        <div class="admin-form-group">
+                            <label>Номер</label>
+                            <input type="text" id="admin-driver-number" class="admin-input" value="77 АА 123456">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>ФИО</label>
+                            <input type="text" id="admin-driver-fullname" class="admin-input" value="ИВАНОВ ИВАН ИВАНОВИЧ">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Категории</label>
+                            <input type="text" id="admin-driver-categories" class="admin-input" value="B, C">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Дата рождения</label>
+                            <input type="text" id="admin-driver-birthdate" class="admin-input" value="01.01.1990">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Дата выдачи</label>
+                            <input type="text" id="admin-driver-issuedate" class="admin-input" value="15.07.2018">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Действительно до</label>
+                            <input type="text" id="admin-driver-validuntil" class="admin-input" value="15.07.2028">
+                        </div>
+                        <button class="admin-save-btn" onclick="saveDocumentFromAdmin('driver')">Сохранить изменения</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вкладка логов -->
+        <div id="admin-tab-logs" class="admin-tab-content">
+            <div class="admin-section">
+                <h3 class="admin-section-title">Логи входов пользователей (последние 50)</h3>
+                <div id="admin-logs-list" class="admin-logs-list">
+                    <!-- Логи будут загружены динамически -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+/* ============================================
+   TASK 5: Модуль аутентификации (AuthModule)
+   ============================================ */
+
+// Генерация ключа доступа формата GOS-XXXXXXXXXXXX
+function generateAccessKey() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let key = 'GOS-';
+    for (let i = 0; i < 16; i++) {
+        key += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return key;
+}
+
+// Сохранение ключа доступа в LocalStorage
+function saveAccessKey(key) {
+    try {
+        const timestamp = Date.now();
+        localStorage.setItem('gosuslugi_access_key', key);
+        localStorage.setItem('gosuslugi_key_created_at', timestamp.toString());
+        logAccess(key, timestamp, 'generated');
+        return true;
+    } catch (e) {
+        console.error('Ошибка сохранения ключа:', e);
+        alert('Ошибка сохранения данных. Проверьте настройки браузера.');
+        return false;
+    }
+}
+
+// Проверка валидности ключа доступа
+function validateAccessKey(key) {
+    if (!key) {
+        return { valid: false, error: 'Ключ доступа не найден' };
+    }
+    
+    // Проверка формата
+    const keyPattern = /^GOS-[A-Z0-9]{16}$/;
+    if (!keyPattern.test(key)) {
+        return { valid: false, error: 'Неверный формат ключа доступа' };
+    }
+    
+    // Проверка срока действия
+    try {
+        const createdAt = parseInt(localStorage.getItem('gosuslugi_key_created_at') || '0');
+        const now = Date.now();
+        const expirationTime = 24 * 60 * 60 * 1000; // 24 часа
+        
+        if (now - createdAt > expirationTime) {
+            return { valid: false, error: 'Срок действия ключа истёк. Получите новый ключ.' };
+        }
+        
+        return { valid: true };
+    } catch (e) {
+        console.error('Ошибка проверки ключа:', e);
+        return { valid: false, error: 'Ошибка проверки ключа' };
+    }
+}
+
+// Получение текущего ключа
+function getCurrentKey() {
+    try {
+        return localStorage.getItem('gosuslugi_access_key');
+    } catch (e) {
+        console.error('Ошибка чтения ключа:', e);
+        return null;
+    }
+}
+
+// Логирование входа
+function logAccess(key, timestamp, action) {
+    try {
+        let logs = JSON.parse(localStorage.getItem('gosuslugi_access_logs') || '[]');
+        logs.push({
+            key: key,
+            timestamp: timestamp,
+            action: action,
+            date: new Date(timestamp).toLocaleString('ru-RU')
+        });
+        // Храним только последние 50 записей
+        if (logs.length > 50) {
+            logs = logs.slice(-50);
+        }
+        localStorage.setItem('gosuslugi_access_logs', JSON.stringify(logs));
+    } catch (e) {
+        console.error('Ошибка логирования:', e);
+    }
+}
+
+// Генерация ключа и вход
+function generateKey() {
+    const key = generateAccessKey();
+    if (saveAccessKey(key)) {
+        alert(`Ваш ключ доступа:\n\n${key}\n\nСохраните его для повторного входа.\nКлюч действителен 24 часа.`);
+        enterApp();
+    }
+}
+
+// Показать модальное окно входа
+function showLoginModal() {
+    document.getElementById('login-modal').classList.add('active');
+    document.getElementById('login-key-input').value = '';
+    document.getElementById('login-error').classList.add('hidden');
+}
+
+// Вход по ключу
+function loginWithKey() {
+    const input = document.getElementById('login-key-input').value.trim().toUpperCase();
+    const errorDiv = document.getElementById('login-error');
+    
+    if (!input) {
+        errorDiv.textContent = 'Введите ключ доступа';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    const validation = validateAccessKey(input);
+    
+    if (!validation.valid) {
+        errorDiv.textContent = validation.error;
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    // Проверяем, что ключ совпадает с сохранённым
+    const savedKey = getCurrentKey();
+    if (input !== savedKey) {
+        errorDiv.textContent = 'Ключ не найден. Проверьте правильность ввода.';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    logAccess(input, Date.now(), 'login');
+    closeModal('login-modal');
+    enterApp();
+}
+
+// Вход в приложение
+function enterApp() {
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('app').classList.add('active');
+    initializeApp();
+}
+
+// Выход из приложения
+function exitApp() {
+    document.getElementById('app').classList.remove('active');
+    document.getElementById('landing').style.display = 'block';
+}
+
+/* ============================================
+   TASK 7: Модуль данных документов (DataModule)
+   ============================================ */
+
+// Данные по умолчанию для документов
+function getDefaultDocuments() {
+    return {
+        passport: {
+            type: 'passport',
+            fullName: 'ИВАНОВ ИВАН ИВАНОВИЧ',
+            number: '4509 123456',
+            issueDate: '15.03.2015',
+            issuedBy: 'ОТДЕЛЕНИЕМ УФМС РОССИИ ПО Г. МОСКВЕ',
+            birthDate: '01.01.1990',
+            birthPlace: 'Г. МОСКВА',
+            gender: 'МУЖ.',
+            departmentCode: '450-009'
+        },
+        snils: {
+            type: 'snils',
+            fullName: 'ИВАНОВ ИВАН ИВАНОВИЧ',
+            number: '123-456-789 00',
+            issueDate: '10.05.2010'
+        },
+        inn: {
+            type: 'inn',
+            fullName: 'ИВАНОВ ИВАН ИВАНОВИЧ',
+            number: '773012345678',
+            issueDate: '20.06.2012',
+            issuedBy: 'ИФНС № 30 ПО Г. МОСКВЕ'
+        },
+        oms: {
+            type: 'oms',
+            fullName: 'ИВАНОВ ИВАН ИВАНОВИЧ',
+            number: '1234567890123456',
+            issueDate: '01.01.2020',
+            validUntil: 'БЕССРОЧНО',
+            insuranceCompany: 'АО «МАКС-М»'
+        },
+        driver_license: {
+            type: 'driver_license',
+            fullName: 'ИВАНОВ ИВАН ИВАНОВИЧ',
+            number: '77 АА 123456',
+            issueDate: '15.07.2018',
+            validUntil: '15.07.2028',
+            birthDate: '01.01.1990',
+            categories: 'B, C'
+        }
+    };
+}
+
+// Загрузка документов из LocalStorage
+function loadDocuments() {
+    try {
+        const data = localStorage.getItem('gosuslugi_documents');
+        if (data) {
+            return JSON.parse(data);
+        }
+        return getDefaultDocuments();
+    } catch (e) {
+        console.error('Ошибка загрузки документов:', e);
+        return getDefaultDocuments();
+    }
+}
+
+// Сохранение документов в LocalStorage
+function saveDocuments(documents) {
+    try {
+        localStorage.setItem('gosuslugi_documents', JSON.stringify(documents));
+        return true;
+    } catch (e) {
+        console.error('Ошибка сохранения документов:', e);
+        alert('Ошибка сохранения данных. Проверьте настройки браузера.');
+        return false;
+    }
+}
+
+// Получение конкретного документа
+function getDocument(type) {
+    const documents = loadDocuments();
+    return documents[type] || null;
+}
+
+// Обновление документа
+function updateDocument(type, data) {
+    const documents = loadDocuments();
+    documents[type] = data;
+    return saveDocuments(documents);
+}
+
+/* ============================================
+   TASK 9: Генерация QR-кодов (QRCodeModule)
+   ============================================ */
+
+// Генерация QR-кода
+function generateQRCode(documentData) {
+    const modal = document.getElementById('qr-modal');
+    const canvas = document.getElementById('qr-canvas');
+    
+    // Очищаем предыдущий QR-код
+    canvas.innerHTML = '';
+    
+    // Форматируем данные для QR-кода
+    const qrData = `Тип: ${getDocumentTypeName(documentData.type)}\nНомер: ${documentData.number}\nФИО: ${documentData.fullName}`;
+    
+    // Проверяем загрузку библиотеки QRCode
+    if (typeof QRCode === 'undefined') {
+        alert('Ошибка загрузки библиотеки QR-кодов. Проверьте подключение к интернету.');
+        return;
+    }
+    
+    // Генерируем QR-код
+    try {
+        new QRCode(canvas, {
+            text: qrData,
+            width: 256,
+            height: 256,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        modal.classList.add('active');
+    } catch (e) {
+        console.error('Ошибка генерации QR-кода:', e);
+        alert('Ошибка генерации QR-кода');
+    }
+}
+
+// Получение названия типа документа
+function getDocumentTypeName(type) {
+    const names = {
+        'passport': 'Паспорт РФ',
+        'snils': 'СНИЛС',
+        'inn': 'ИНН',
+        'oms': 'Полис ОМС',
+        'driver_license': 'Водительское удостоверение'
+    };
+    return names[type] || type;
+}
+
+/* ============================================
+   TASK 12: Админ-панель (AdminModule)
+   ============================================ */
+
+// Обработка долгого нажатия на аватар
+let longPressTimer;
+const LONG_PRESS_DURATION = 3000; // 3 секунды
+
+document.addEventListener('DOMContentLoaded', function() {
+    const avatar = document.getElementById('app-avatar');
+    
+    if (avatar) {
+        // Для мобильных устройств
+        avatar.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            longPressTimer = setTimeout(function() {
+                showAdminModal();
+            }, LONG_PRESS_DURATION);
+        });
+        
+        avatar.addEventListener('touchend', function() {
+            clearTimeout(longPressTimer);
+        });
+        
+        avatar.addEventListener('touchmove', function() {
+            clearTimeout(longPressTimer);
+        });
+        
+        // Для десктопа
+        avatar.addEventListener('mousedown', function() {
+            longPressTimer = setTimeout(function() {
+                showAdminModal();
+            }, LONG_PRESS_DURATION);
+        });
+        
+        avatar.addEventListener('mouseup', function() {
+            clearTimeout(longPressTimer);
+        });
+        
+        avatar.addEventListener('mouseleave', function() {
+            clearTimeout(longPressTimer);
+        });
+    }
+});
+
+// Показать модальное окно админ-панели
+function showAdminModal() {
+    document.getElementById('admin-modal').classList.add('active');
+    document.getElementById('admin-password-input').value = '';
+    document.getElementById('admin-error').classList.add('hidden');
+}
+
+// Проверка пароля администратора
+function checkAdminPassword() {
+    const password = document.getElementById('admin-password-input').value;
+    const errorDiv = document.getElementById('admin-error');
+    
+    if (password === 'admin123') {
+        closeModal('admin-modal');
+        openAdminPanel();
+    } else {
+        errorDiv.textContent = 'Неверный пароль администратора';
+        errorDiv.classList.remove('hidden');
+    }
+}
+
+/* ============================================
+   TASK 12: Полная функциональность админ-панели
+   ============================================ */
+
+// Открыть админ-панель
+function openAdminPanel() {
+    document.getElementById('admin-panel').classList.add('active');
+    loadAdminDocuments();
+    loadAdminLogs();
+}
+
+// Закрыть админ-панель
+function closeAdminPanel() {
+    document.getElementById('admin-panel').classList.remove('active');
+}
+
+// Переключение вкладок админ-панели
+function switchAdminTab(tab) {
+    // Обновляем активную вкладку
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Показываем нужный контент
+    document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('admin-tab-' + tab).classList.add('active');
+    
+    // Загружаем логи при переключении на вкладку логов
+    if (tab === 'logs') {
+        loadAdminLogs();
+    }
+}
+
+// Переключение формы документа
+function toggleAdminDoc(type) {
+    const form = document.getElementById('admin-' + type);
+    const card = form.parentElement;
+    
+    if (form.classList.contains('hidden')) {
+        // Закрываем все остальные формы
+        document.querySelectorAll('.admin-doc-form').forEach(f => {
+            f.classList.add('hidden');
+            f.parentElement.classList.remove('open');
+        });
+        
+        // Открываем текущую форму
+        form.classList.remove('hidden');
+        card.classList.add('open');
+    } else {
+        form.classList.add('hidden');
+        card.classList.remove('open');
+    }
+}
+
+// Загрузка данных документов в админ-панель
+function loadAdminDocuments() {
+    const documents = loadDocuments();
+    
+    // Паспорт
+    if (documents.passport) {
+        document.getElementById('admin-passport-number').value = documents.passport.number;
+        document.getElementById('admin-passport-fullname').value = documents.passport.fullName;
+        document.getElementById('admin-passport-birthdate').value = documents.passport.birthDate;
+        document.getElementById('admin-passport-birthplace').value = documents.passport.birthPlace;
+        document.getElementById('admin-passport-issuedate').value = documents.passport.issueDate;
+        document.getElementById('admin-passport-issuedby').value = documents.passport.issuedBy;
+        document.getElementById('admin-passport-code').value = documents.passport.departmentCode;
+        document.getElementById('admin-passport-gender').value = documents.passport.gender;
+    }
+    
+    // СНИЛС
+    if (documents.snils) {
+        document.getElementById('admin-snils-number').value = documents.snils.number;
+        document.getElementById('admin-snils-fullname').value = documents.snils.fullName;
+        document.getElementById('admin-snils-issuedate').value = documents.snils.issueDate;
+    }
+    
+    // ОМС
+    if (documents.oms) {
+        document.getElementById('admin-oms-number').value = documents.oms.number;
+        document.getElementById('admin-oms-fullname').value = documents.oms.fullName;
+        document.getElementById('admin-oms-issuedate').value = documents.oms.issueDate;
+        document.getElementById('admin-oms-validuntil').value = documents.oms.validUntil;
+        document.getElementById('admin-oms-company').value = documents.oms.insuranceCompany;
+    }
+    
+    // ИНН
+    if (documents.inn) {
+        document.getElementById('admin-inn-number').value = documents.inn.number;
+        document.getElementById('admin-inn-fullname').value = documents.inn.fullName;
+        document.getElementById('admin-inn-issuedate').value = documents.inn.issueDate;
+        document.getElementById('admin-inn-issuedby').value = documents.inn.issuedBy;
+    }
+    
+    // Водительское удостоверение
+    if (documents.driver_license) {
+        document.getElementById('admin-driver-number').value = documents.driver_license.number;
+        document.getElementById('admin-driver-fullname').value = documents.driver_license.fullName;
+        document.getElementById('admin-driver-categories').value = documents.driver_license.categories;
+        document.getElementById('admin-driver-birthdate').value = documents.driver_license.birthDate;
+        document.getElementById('admin-driver-issuedate').value = documents.driver_license.issueDate;
+        document.getElementById('admin-driver-validuntil').value = documents.driver_license.validUntil;
+    }
+}
+
+// Сохранение документа из админ-панели
+function saveDocumentFromAdmin(type) {
+    let updatedDoc = {};
+    
+    if (type === 'passport') {
+        updatedDoc = {
+            type: 'passport',
+            number: document.getElementById('admin-passport-number').value,
+            fullName: document.getElementById('admin-passport-fullname').value,
+            birthDate: document.getElementById('admin-passport-birthdate').value,
+            birthPlace: document.getElementById('admin-passport-birthplace').value,
+            issueDate: document.getElementById('admin-passport-issuedate').value,
+            issuedBy: document.getElementById('admin-passport-issuedby').value,
+            departmentCode: document.getElementById('admin-passport-code').value,
+            gender: document.getElementById('admin-passport-gender').value
+        };
+    } else if (type === 'snils') {
+        updatedDoc = {
+            type: 'snils',
+            number: document.getElementById('admin-snils-number').value,
+            fullName: document.getElementById('admin-snils-fullname').value,
+            issueDate: document.getElementById('admin-snils-issuedate').value
+        };
+    } else if (type === 'oms') {
+        updatedDoc = {
+            type: 'oms',
+            number: document.getElementById('admin-oms-number').value,
+            fullName: document.getElementById('admin-oms-fullname').value,
+            issueDate: document.getElementById('admin-oms-issuedate').value,
+            validUntil: document.getElementById('admin-oms-validuntil').value,
+            insuranceCompany: document.getElementById('admin-oms-company').value
+        };
+    } else if (type === 'inn') {
+        updatedDoc = {
+            type: 'inn',
+            number: document.getElementById('admin-inn-number').value,
+            fullName: document.getElementById('admin-inn-fullname').value,
+            issueDate: document.getElementById('admin-inn-issuedate').value,
+            issuedBy: document.getElementById('admin-inn-issuedby').value
+        };
+    } else if (type === 'driver') {
+        updatedDoc = {
+            type: 'driver_license',
+            number: document.getElementById('admin-driver-number').value,
+            fullName: document.getElementById('admin-driver-fullname').value,
+            categories: document.getElementById('admin-driver-categories').value,
+            birthDate: document.getElementById('admin-driver-birthdate').value,
+            issueDate: document.getElementById('admin-driver-issuedate').value,
+            validUntil: document.getElementById('admin-driver-validuntil').value
+        };
+        type = 'driver_license'; // Исправляем тип для сохранения
+    }
+    
+    if (updateDocument(type, updatedDoc)) {
+        alert('Документ успешно обновлён!');
+        
+        // Обновляем данные на странице документа, если она открыта
+        loadDocumentData(type);
+    }
+}
+
+// Загрузка логов входов
+function loadAdminLogs() {
+    const logsList = document.getElementById('admin-logs-list');
+    
+    try {
+        const logs = JSON.parse(localStorage.getItem('gosuslugi_access_logs') || '[]');
+        
+        if (logs.length === 0) {
+            logsList.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--app-text-secondary);">Логи входов пусты</div>';
+            return;
+        }
+        
+        // Сортируем логи по времени (новые сверху)
+        logs.sort((a, b) => b.timestamp - a.timestamp);
+        
+        // Берём последние 50
+        const recentLogs = logs.slice(0, 50);
+        
+        logsList.innerHTML = recentLogs.map(log => `
+            <div class="admin-log-item">
+                <div class="admin-log-info">
+                    <div class="admin-log-key">${log.key}</div>
+                    <div class="admin-log-date">${log.date}</div>
+                </div>
+                <div class="admin-log-action ${log.action}">${log.action === 'generated' ? 'Создан' : 'Вход'}</div>
+            </div>
+        `).join('');
+    } catch (e) {
+        console.error('Ошибка загрузки логов:', e);
+        logsList.innerHTML = '<div style="text-align: center; padding: 40px; color: #ff3b30;">Ошибка загрузки логов</div>';
+    }
+}
+
+/* ============================================
+   Вспомогательные функции
+   ============================================ */
+
+// Закрытие модального окна
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+// Закрытие модального окна при клике вне его
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal')) {
+        e.target.classList.remove('active');
+    }
+});
+
+// Toggle FAQ
+function toggleFaq(element) {
+    const faqItem = element.parentElement;
+    faqItem.classList.toggle('active');
+}
+
+// Показать документ (заглушка, будет реализовано в Task 8)
+function showDocument(type) {
+    const doc = getDocument(type);
+    if (doc) {
+        alert(`Открытие документа: ${getDocumentTypeName(type)}\n\nНомер: ${doc.number}\nФИО: ${doc.fullName}\n\n(Полная реализация страниц документов в Task 8)`);
+        
+        // Демонстрация генерации QR-кода
+        if (confirm('Сгенерировать QR-код для этого документа?')) {
+            generateQRCode(doc);
+        }
+    }
+}
+
+// Переключение экранов (заглушка)
+function showScreen(screen) {
+    // Обновление активного элемента навигации
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.target.closest('.nav-item').classList.add('active');
+}
+
+// Инициализация приложения
+function initializeApp() {
+    // Загружаем документы при первом входе
+    const documents = loadDocuments();
+    console.log('Документы загружены:', documents);
+    
+    // Инициализируем тему
+    initializeTheme();
+}
+
+// Автоматический вход при загрузке страницы
+window.addEventListener('DOMContentLoaded', function() {
+    const key = getCurrentKey();
+    if (key) {
+        const validation = validateAccessKey(key);
+        if (validation.valid) {
+            // Автоматический вход
+            enterApp();
+        }
+    }
+    
+    // Попытка блокировки ориентации экрана
+    try {
+        if (screen && screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('portrait').catch(function() {
+                console.log('Не удалось заблокировать ориентацию');
+            });
+        }
+    } catch (e) {
+        console.log('Блокировка ориентации не поддерживается');
+    }
+});
+
+// Обработка нажатия Enter в полях ввода
+document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        if (document.getElementById('login-modal').classList.contains('active')) {
+            loginWithKey();
+        } else if (document.getElementById('admin-modal').classList.contains('active')) {
+            checkAdminPassword();
+        }
+    }
+});
+
+/* ============================================
+   TASK 8: Функции для страниц документов
+   ============================================ */
+
+// Показать страницу документа
+function showDocumentPage(type) {
+    // Скрываем все экраны
+    hideAllScreens();
+    
+    // Показываем страницу документа
+    const pageId = type + '-page';
+    const page = document.getElementById(pageId);
+    if (page) {
+        page.classList.add('active');
+        
+        // Загружаем данные документа
+        loadDocumentData(type);
+    }
+}
+
+// Загрузка данных документа на страницу
+function loadDocumentData(type) {
+    const doc = getDocument(type);
+    if (!doc) return;
+    
+    // Обновляем данные на странице
+    const prefix = type;
+    
+    if (type === 'passport') {
+        document.getElementById(prefix + '-number').textContent = doc.number;
+        document.getElementById(prefix + '-fullname').textContent = doc.fullName;
+        document.getElementById(prefix + '-birthdate').textContent = doc.birthDate;
+        document.getElementById(prefix + '-birthplace').textContent = doc.birthPlace;
+        document.getElementById(prefix + '-issuedate').textContent = doc.issueDate;
+        document.getElementById(prefix + '-issuedby').textContent = doc.issuedBy;
+        document.getElementById(prefix + '-code').textContent = doc.departmentCode;
+        document.getElementById(prefix + '-gender').textContent = doc.gender;
+    } else if (type === 'snils') {
+        document.getElementById(prefix + '-number').textContent = doc.number;
+        document.getElementById(prefix + '-fullname').textContent = doc.fullName;
+        document.getElementById(prefix + '-issuedate').textContent = doc.issueDate;
+    } else if (type === 'oms') {
+        document.getElementById(prefix + '-number').textContent = doc.number;
+        document.getElementById(prefix + '-fullname').textContent = doc.fullName;
+        document.getElementById(prefix + '-issuedate').textContent = doc.issueDate;
+        document.getElementById(prefix + '-validuntil').textContent = doc.validUntil;
+        document.getElementById(prefix + '-company').textContent = doc.insuranceCompany;
+    } else if (type === 'inn') {
+        document.getElementById(prefix + '-number').textContent = doc.number;
+        document.getElementById(prefix + '-fullname').textContent = doc.fullName;
+        document.getElementById(prefix + '-issuedate').textContent = doc.issueDate;
+        document.getElementById(prefix + '-issuedby').textContent = doc.issuedBy;
+    } else if (type === 'driver') {
+        document.getElementById(prefix + '-number').textContent = doc.number;
+        document.getElementById(prefix + '-fullname').textContent = doc.fullName;
+        document.getElementById(prefix + '-categories').textContent = doc.categories;
+        document.getElementById(prefix + '-birthdate').textContent = doc.birthDate;
+        document.getElementById(prefix + '-issuedate').textContent = doc.issueDate;
+        document.getElementById(prefix + '-validuntil').textContent = doc.validUntil;
+    }
+}
+
+// Переключение скрытых данных
+function toggleHiddenData(type) {
+    const hiddenDiv = document.getElementById(type + '-hidden');
+    const toggleText = document.getElementById(type + '-toggle-text');
+    
+    if (hiddenDiv.classList.contains('visible')) {
+        hiddenDiv.classList.remove('visible');
+        toggleText.textContent = 'Показать все данные';
+    } else {
+        hiddenDiv.classList.add('visible');
+        toggleText.textContent = 'Скрыть данные';
+    }
+}
+
+// Показать QR-код для документа
+function showQRForDocument(type) {
+    const doc = getDocument(type);
+    if (doc) {
+        generateQRCode(doc);
+    }
+}
+
+// Вернуться на главный экран
+function backToMain() {
+    navigateTo('main');
+}
+
+/* ============================================
+   TASK 10: Функции навигации
+   ============================================ */
+
+// Навигация между экранами
+function navigateTo(screen) {
+    // Скрываем все экраны
+    hideAllScreens();
+    
+    // Показываем нужный экран
+    if (screen === 'main') {
+        document.getElementById('main-screen').style.display = 'block';
+    } else if (screen === 'services') {
+        document.getElementById('services-page').classList.add('active');
+    } else if (screen === 'documents-list') {
+        document.getElementById('documents-list-page').classList.add('active');
+    } else if (screen === 'profile') {
+        document.getElementById('profile-page').classList.add('active');
+        loadProfileSettings();
+    }
+    
+    // Обновляем активный элемент навигации
+    updateActiveNav(screen);
+}
+
+// Скрыть все экраны
+function hideAllScreens() {
+    // Скрываем главный экран
+    document.getElementById('main-screen').style.display = 'none';
+    
+    // Скрываем страницы документов
+    document.querySelectorAll('.document-page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Скрываем другие страницы
+    document.getElementById('services-page').classList.remove('active');
+    document.getElementById('documents-list-page').classList.remove('active');
+    document.getElementById('profile-page').classList.remove('active');
+}
+
+// Обновление активного элемента навигации
+function updateActiveNav(screen) {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-screen') === screen) {
+            item.classList.add('active');
+        }
+    });
+}
+
+/* ============================================
+   TASK 11 & 13: Функции профиля и настроек
+   ============================================ */
+
+// Загрузка настроек профиля
+function loadProfileSettings() {
+    // Загружаем тему
+    const theme = localStorage.getItem('gosuslugi_theme') || 'light';
+    const themeToggle = document.getElementById('theme-toggle');
+    if (theme === 'dark') {
+        themeToggle.classList.add('active');
+    } else {
+        themeToggle.classList.remove('active');
+    }
+    
+    // Загружаем версию паспорта
+    const passportVersion = localStorage.getItem('gosuslugi_passport_version') || '1';
+    document.getElementById('passport-version-select').value = passportVersion;
+}
+
+// Переключение темы
+function toggleTheme() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('gosuslugi_theme') || 'light';
+    
+    let newTheme;
+    if (currentTheme === 'light') {
+        newTheme = 'dark';
+        themeToggle.classList.add('active');
+    } else {
+        newTheme = 'light';
+        themeToggle.classList.remove('active');
+    }
+    
+    // Сохраняем тему
+    try {
+        localStorage.setItem('gosuslugi_theme', newTheme);
+        applyTheme(newTheme);
+    } catch (e) {
+        console.error('Ошибка сохранения темы:', e);
+        alert('Ошибка сохранения настроек');
+    }
+}
+
+// Применение темы
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.body.style.background = '#1a1a2e';
+        document.documentElement.style.setProperty('--app-bg', '#1a1a2e');
+        document.documentElement.style.setProperty('--app-card-bg', '#24273a');
+        document.documentElement.style.setProperty('--app-text', '#ffffff');
+        document.documentElement.style.setProperty('--app-text-secondary', '#9ca3af');
+        document.documentElement.style.setProperty('--app-border', '#3a3d4e');
+    } else {
+        document.body.style.background = '#f5f5f5';
+        document.documentElement.style.setProperty('--app-bg', '#f5f5f5');
+        document.documentElement.style.setProperty('--app-card-bg', '#ffffff');
+        document.documentElement.style.setProperty('--app-text', '#000000');
+        document.documentElement.style.setProperty('--app-text-secondary', '#666666');
+        document.documentElement.style.setProperty('--app-border', '#e0e0e0');
+    }
+}
+
+// Изменение версии паспорта
+function changePassportVersion() {
+    const version = document.getElementById('passport-version-select').value;
+    
+    try {
+        localStorage.setItem('gosuslugi_passport_version', version);
+        alert(`Версия паспорта изменена на ${version}`);
+    } catch (e) {
+        console.error('Ошибка сохранения версии паспорта:', e);
+        alert('Ошибка сохранения настроек');
+    }
+}
+
+// Выход из аккаунта
+function logout() {
+    if (confirm('Вы уверены, что хотите выйти?\n\nВаш ключ доступа будет удалён.')) {
+        try {
+            localStorage.removeItem('gosuslugi_access_key');
+            localStorage.removeItem('gosuslugi_key_created_at');
+            exitApp();
+            alert('Вы вышли из аккаунта');
+        } catch (e) {
+            console.error('Ошибка выхода:', e);
+            alert('Ошибка выхода из аккаунта');
+        }
+    }
+}
+
+// Инициализация темы при загрузке
+function initializeTheme() {
+    const theme = localStorage.getItem('gosuslugi_theme') || 'light';
+    applyTheme(theme);
+}
+
+console.log('ГосFake загружен успешно! Версия: 1.0.0');
+console.log('Для доступа к админ-панели: удерживайте аватар 3 секунды, пароль: admin123');
+</script>
+
+</body>
+</html>
